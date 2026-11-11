@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>企业端 · 粤港澳青年科创 OPC Hub</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%232C1E4A'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23C9B8E4' stroke-width='1.4'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%238B5CF6'/%3E%3C/svg%3E">
+<style>/* ============================================================
+   OPC Hub · 三端共用视觉底座
+   设计方向：「湾区坐标」——深墨紫侧栏 + 纸白内容区 + 衬线标题
+   紫色作为品牌色克制使用，数据用青绿、待办用琥珀
+   ============================================================ */
+
+:root{
+  --paper:#F6F3F8;
+  --surface:#FFFFFF;
+  --ink:#241A33;
+  --ink2:#584A6C;
+  --ink3:#8B7D9D;
+  --line:#E5DFEC;
+  --line2:#D5CBE0;
+  --brand:#4F3A82;
+  --brand-d:#2C1E4A;
+  --brand-l:#8B5CF6;
+  --brand-w:#EFE9F8;
+  --teal:#1B7469;
+  --teal-w:#E3F0ED;
+  --amber:#96651F;
+  --amber-w:#F6EDDD;
+  --red:#9C3A33;
+  --red-w:#FAE8E6;
+  --serif:"Noto Serif SC","Songti SC","SimSun",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono","SFMono-Regular",Consolas,"Courier New",monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:14px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+table{border-collapse:collapse;width:100%}
+input,select,textarea{font-family:inherit;font-size:14px}
+
+/* ---------- 布局：侧栏 + 主区 ---------- */
+.shell{display:flex;min-height:100vh}
+
+.rail{
+  width:252px;flex:0 0 252px;
+  background:var(--brand-d);
+  color:#EDE7F6;
+  padding:26px 0 18px;
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;
+  border-right:1px solid #3A2A5C;
+}
+.rail-mark{display:flex;gap:12px;align-items:flex-start;padding:0 20px 20px}
+.rail-mark svg{width:32px;height:32px;flex:0 0 32px;opacity:.9}
+.rail-name{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:.02em;line-height:1.2}
+.rail-sub{font-size:11px;color:#A797C2;margin-top:5px;letter-spacing:.04em}
+.rail-role{
+  margin:0 20px 18px;padding:7px 10px;
+  border:1px solid #4A3573;border-radius:2px;
+  font-size:11.5px;color:#C9B8E4;letter-spacing:.06em;
+  display:flex;align-items:flex-start;gap:7px;line-height:1.55;
+}
+.rail-role .lab{flex:0 0 auto;white-space:nowrap}
+.rail-role b{color:#F1EAFB;font-weight:500}
+.rail-nav{flex:1;overflow-y:auto;padding-bottom:12px}
+.rail-nav::-webkit-scrollbar{width:0}
+.nav-group{padding:14px 20px 6px;font-size:10.5px;letter-spacing:.14em;color:#8F7DB3}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 20px 9px 20px;
+  font-size:13px;color:#CBBDE3;cursor:pointer;
+  border-left:2px solid transparent;
+  transition:background .15s,color .15s;
+}
+.nav-item:hover{background:#3A2960;color:#F2EBFC}
+.nav-item.on{background:#3A2960;color:#FFFFFF;border-left-color:var(--brand-l);font-weight:500}
+.nav-item .ic{width:16px;height:16px;flex:0 0 16px;opacity:.75}
+.nav-item.on .ic{opacity:1}
+.nav-item .badge{
+  margin-left:auto;font-size:10.5px;line-height:1;
+  background:var(--brand-l);color:#fff;border-radius:9px;padding:3px 6px;
+  font-variant-numeric:tabular-nums;
+}
+.rail-foot{padding:14px 20px 0;border-top:1px solid #3A2A5C;font-size:12px}
+.rail-foot a{color:#A797C2;display:flex;align-items:center;gap:8px;padding:6px 0}
+.rail-foot a:hover{color:#EDE7F6}
+
+.main{flex:1;min-width:0;background:var(--paper)}
+.wrap{max-width:1260px;margin:0 auto;padding:30px 40px 64px}
+
+/* ---------- 页头 ---------- */
+.pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:26px}
+.page-title{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1.25;margin:0;letter-spacing:.01em}
+.page-sub{margin:7px 0 0;font-size:12.5px;color:var(--ink3);max-width:62ch;line-height:1.7}
+.page-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.geo{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--ink3);
+  border-left:1px solid var(--line2);padding-left:12px;line-height:1.9;text-align:right;
+}
+
+/* ---------- 按钮 ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;justify-content:center;
+  height:34px;padding:0 14px;border-radius:2px;
+  border:1px solid var(--brand);background:var(--brand);color:#fff;
+  font-size:13px;cursor:pointer;transition:background .15s,border-color .15s;white-space:nowrap;
+}
+.btn:hover{background:#3E2C68;border-color:#3E2C68}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--brand);border-color:var(--line2)}
+.btn.ghost:hover{background:var(--brand-w);border-color:var(--brand)}
+.btn.quiet{background:transparent;color:var(--ink2);border-color:transparent;padding:0 8px}
+.btn.quiet:hover{background:var(--brand-w);color:var(--brand)}
+.btn.sm{height:28px;padding:0 10px;font-size:12px}
+.btn.danger{background:transparent;color:var(--red);border-color:#DFB7B3}
+.btn.danger:hover{background:var(--red-w);border-color:var(--red)}
+.btn.wide{width:100%}
+
+/* ---------- 指标条 ---------- */
+.metrics{
+  display:grid;gap:0;border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);
+  margin-bottom:28px;background:var(--surface);
+}
+.metrics-4{grid-template-columns:repeat(4,1fr)}
+.metrics-3{grid-template-columns:repeat(3,1fr)}
+.metric{padding:18px 22px 16px;border-right:1px solid var(--line)}
+.metric:last-child{border-right:0}
+.metric-val{font-family:var(--serif);font-size:34px;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.metric-val small{font-family:var(--sans);font-size:12px;color:var(--ink3);margin-left:4px;font-weight:400}
+.metric-lab{margin-top:6px;font-size:12px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.metric-delta{font-size:11px;font-variant-numeric:tabular-nums}
+.up{color:var(--teal)}
+.down{color:var(--red)}
+
+/* ---------- 面板 ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:2px}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.panel-hd h2{font-family:var(--serif);font-size:15.5px;font-weight:600;margin:0;letter-spacing:.02em}
+.panel-hd .hd-note{font-size:11.5px;color:var(--ink3)}
+.panel-bd{padding:18px}
+.panel-bd.flush{padding:0}
+.grid{display:grid;gap:20px}
+.g-2{grid-template-columns:1.55fr 1fr}
+.g-2e{grid-template-columns:1fr 1fr}
+.g-3{grid-template-columns:repeat(3,1fr)}
+
+/* ---------- 行式列表（不用浮卡） ---------- */
+.rows{display:block}
+.row{
+  display:flex;align-items:center;gap:14px;
+  padding:15px 18px;border-bottom:1px solid var(--line);
+  cursor:pointer;background:transparent;transition:background .12s;
+  border-left:2px solid transparent;
+}
+.row:last-child{border-bottom:0}
+.row:hover{background:#FBF9FD}
+.row.sel{background:var(--brand-w);border-left-color:var(--brand-l)}
+.row-main{min-width:0;flex:1}
+.row-title{font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.row-meta{font-size:11.5px;color:var(--ink3);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap}
+.row-meta span{white-space:nowrap}
+.row-right{margin-left:auto;text-align:right;flex:0 0 auto;display:flex;align-items:center;gap:10px}
+
+/* ---------- 标签 ---------- */
+.tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;line-height:1.9;padding:0 7px;border-radius:2px;
+  background:var(--brand-w);color:var(--brand);border:1px solid #DDD2EF;white-space:nowrap;
+}
+.tag .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.tag.teal{background:var(--teal-w);color:var(--teal);border-color:#C5DED9}
+.tag.amber{background:var(--amber-w);color:var(--amber);border-color:#E4D3B6}
+.tag.red{background:var(--red-w);color:var(--red);border-color:#E7C3BF}
+.tag.grey{background:#F3F0F6;color:var(--ink2);border-color:var(--line2)}
+.tag.line{background:transparent;border-color:var(--line2);color:var(--ink2)}
+.tag.lg{font-size:12px;padding:1px 9px}
+
+/* ---------- 表格 ---------- */
+.table-wrap{overflow-x:auto}
+.table{table-layout:fixed;min-width:760px}
+.table th,.table td{padding:11px 14px;text-align:left;font-size:12.5px;border-bottom:1px solid var(--line);vertical-align:middle}
+.table th{font-size:11px;letter-spacing:.08em;color:var(--ink3);font-weight:500;background:#FBF9FD;border-bottom:1px solid var(--line2)}
+.table td{color:var(--ink2)}
+.table td .strong{color:var(--ink);font-weight:500}
+.table .num{font-variant-numeric:tabular-nums;text-align:right}
+.table tr:hover td{background:#FBF9FD}
+
+/* ---------- 匹配分 ---------- */
+.score{display:flex;align-items:center;gap:10px}
+.score-num{font-family:var(--serif);font-size:20px;line-height:1;font-variant-numeric:tabular-nums;color:var(--brand)}
+.score-bar{height:3px;width:78px;background:var(--line);position:relative}
+.score-bar i{position:absolute;left:0;top:0;height:3px;background:var(--brand-l)}
+.dims{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 22px;margin-top:12px}
+.dim{font-size:11.5px;color:var(--ink2)}
+.dim-top{display:flex;justify-content:space-between;margin-bottom:4px}
+.dim-top b{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:500}
+.dim-track{height:2px;background:var(--line);position:relative}
+.dim-track i{position:absolute;left:0;top:0;height:2px;background:#B39BE0}
+
+/* ---------- 头像 ---------- */
+.ava{
+  width:38px;height:38px;flex:0 0 38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:15px;font-weight:600;
+  background:var(--brand-w);color:var(--brand);border:1px solid #DDD2EF;
+}
+.ava.t{background:var(--teal-w);color:var(--teal);border-color:#C5DED9}
+.ava.a{background:var(--amber-w);color:var(--amber);border-color:#E4D3B6}
+.ava.lg{width:56px;height:56px;flex:0 0 56px;font-size:20px}
+
+/* ---------- 表单 ---------- */
+.field{margin-bottom:16px}
+.field > label{display:block;font-size:12px;color:var(--ink2);margin-bottom:6px;letter-spacing:.02em}
+.field .hint{font-size:11px;color:var(--ink3);margin-top:5px}
+.inp,.sel,.txa{
+  width:100%;height:36px;padding:0 10px;border:1px solid var(--line2);border-radius:2px;
+  background:#fff;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s;
+}
+.inp:focus,.sel:focus,.txa:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(139,92,246,.12)}
+.txa{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line-height:1.65}
+.inp::placeholder,.txa::placeholder{color:#B0A5BE}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f-row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.chipset{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  font-size:12px;padding:4px 10px;border:1px solid var(--line2);border-radius:2px;
+  background:#fff;color:var(--ink2);cursor:pointer;transition:.12s;user-select:none;
+}
+.chip:hover{border-color:var(--brand);color:var(--brand)}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.chip.on:hover{background:#3E2C68}
+.chip.add{border-style:dashed;color:var(--ink3)}
+
+/* 滑杆 */
+.slider-row{display:grid;grid-template-columns:76px 1fr 40px;gap:12px;align-items:center;margin-bottom:9px}
+.slider-row label{font-size:12px;color:var(--ink2)}
+.slider-row output{font-family:var(--mono);font-size:11.5px;color:var(--brand);text-align:right}
+input[type=range]{-webkit-appearance:none;appearance:none;height:2px;background:var(--line2);outline:none;width:100%}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:13px;height:13px;border-radius:50%;
+  background:var(--brand-l);border:2px solid #fff;box-shadow:0 0 0 1px var(--brand-l);cursor:pointer;
+}
+
+/* ---------- 时间轴 ---------- */
+.tl{display:grid;grid-template-columns:96px 18px 1fr;row-gap:16px}
+.tl-week{font-family:var(--mono);font-size:11px;color:var(--ink3);text-align:right;padding-top:2px;font-variant-numeric:tabular-nums}
+.tl-axis{position:relative;justify-self:center;width:1px;background:var(--line2);height:100%}
+.tl-dot{position:absolute;left:50%;transform:translateX(-50%);width:9px;height:9px;border-radius:50%;background:var(--brand-l);border:2px solid var(--paper);top:-1px}
+.tl-body{padding-bottom:2px}
+.tl-body h4{margin:0 0 4px;font-size:13px;font-weight:500}
+.tl-body p{margin:0;font-size:11.5px;color:var(--ink3);line-height:1.6}
+.tl-body .tag{margin-top:6px}
+
+/* ---------- 抽屉 ---------- */
+.backdrop{position:fixed;inset:0;background:rgba(36,26,51,.32);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
+.backdrop.on{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;height:100vh;width:500px;max-width:94vw;background:var(--surface);
+  border-left:1px solid var(--line2);transform:translateX(100%);transition:transform .24s cubic-bezier(.32,.72,.35,1);
+  z-index:61;display:flex;flex-direction:column;
+}
+.drawer.on{transform:none}
+.drawer-hd{display:flex;align-items:flex-start;gap:12px;padding:20px 22px 16px;border-bottom:1px solid var(--line)}
+.drawer-hd h3{margin:0;font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.35}
+.drawer-hd p{margin:6px 0 0;font-size:12px;color:var(--ink3)}
+.drawer-x{margin-left:auto;background:none;border:0;font-size:20px;line-height:1;color:var(--ink3);cursor:pointer;padding:2px 4px}
+.drawer-x:hover{color:var(--ink)}
+.drawer-bd{flex:1;overflow-y:auto;padding:20px 22px}
+.drawer-ft{border-top:1px solid var(--line);padding:14px 22px;display:flex;gap:10px;justify-content:flex-end;background:#FBF9FD}
+
+/* ---------- 弹窗 ---------- */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:70;padding:20px}
+.modal.on{display:flex}
+.modal-box{background:#fff;border:1px solid var(--line2);border-radius:2px;width:520px;max-width:100%;max-height:88vh;overflow:auto}
+.modal-hd{padding:18px 22px 14px;border-bottom:1px solid var(--line);font-family:var(--serif);font-size:18px;font-weight:600}
+.modal-bd{padding:18px 22px}
+.modal-ft{padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:#FBF9FD}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:36px;transform:translate(-50%,12px);
+  background:var(--brand-d);color:#F3EDFB;font-size:13px;padding:10px 18px;border-radius:2px;
+  opacity:0;pointer-events:none;transition:.22s;z-index:80;max-width:80vw;
+  box-shadow:0 6px 24px rgba(44,30,74,.24);
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- 数据可视化 ---------- */
+.chart{width:100%;height:300px}
+.chart.sm{height:240px}
+.chart-note{font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.7}
+.bars-fallback{padding:6px 0}
+.bar-row{display:grid;grid-template-columns:104px 1fr 48px;gap:10px;align-items:center;padding:5px 0;font-size:12px}
+.bar-track{height:8px;background:#F1ECF7;position:relative}
+.bar-track i{position:absolute;left:0;top:0;height:8px;background:var(--brand);opacity:.85}
+.bar-num{font-variant-numeric:tabular-nums;text-align:right;color:var(--ink2);font-size:11.5px}
+
+/* ---------- 其它 ---------- */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:0}
+.tab{
+  padding:9px 14px;font-size:12.5px;color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent;
+  background:none;border-top:0;border-left:0;border-right:0;
+}
+.tab.on{color:var(--brand);border-bottom-color:var(--brand);font-weight:500}
+.tab .n{font-variant-numeric:tabular-nums;color:var(--ink3);font-size:11px;margin-left:5px}
+.empty{padding:44px 20px;text-align:center;color:var(--ink3);font-size:12.5px}
+.kv{display:grid;grid-template-columns:96px 1fr;gap:8px 12px;font-size:12.5px}
+.kv dt{color:var(--ink3)}
+.kv dd{margin:0;color:var(--ink)}
+.note{background:#FBF7FE;border-left:2px solid var(--brand-l);padding:10px 14px;font-size:12px;color:var(--ink2);line-height:1.75}
+.hr{height:1px;background:var(--line);margin:18px 0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+/* ---------- 进度条 ---------- */
+.prog{display:flex;align-items:center;gap:10px;margin-top:9px;font-size:11px;color:var(--ink3)}
+.prog .ptrack{flex:1;max-width:240px;height:5px;background:#F0EBF7;position:relative}
+.prog .ptrack i{position:absolute;left:0;top:0;height:5px;background:var(--brand);opacity:.85}
+.prog span:last-child{font-variant-numeric:tabular-nums}
+
+/* ---------- 响应式 ---------- */
+@media (max-width:1080px){
+  .g-2,.g-2e,.g-3{grid-template-columns:1fr}
+  .wrap{padding:22px 20px 56px}
+}
+@media (max-width:820px){
+  .shell{flex-direction:column}
+  .rail{
+    width:100%;flex:none;height:auto;position:sticky;top:0;z-index:50;
+    padding:12px 0 0;border-right:0;border-bottom:1px solid #3A2A5C;
+  }
+  .rail-mark{padding:0 14px 10px}
+  .rail-mark svg{width:26px;height:26px;flex:0 0 26px}
+  .rail-name{font-size:15px}
+  .rail-sub{display:none}
+  .rail-role{margin:0 14px 10px;padding:5px 9px;font-size:10.5px}
+  .rail-nav{display:flex;overflow-x:auto;overflow-y:hidden;gap:0;padding:0 6px 0}
+  .nav-group{display:none}
+  .nav-item{padding:9px 12px;border-left:0;border-bottom:2px solid transparent;flex:0 0 auto;font-size:12.5px}
+  .nav-item.on{border-left:0;border-bottom-color:var(--brand-l);background:transparent}
+  .nav-item .badge{display:none}
+  .rail-foot{display:none}
+  .page-title{font-size:24px}
+  .metrics-4{grid-template-columns:1fr 1fr}
+  .metrics-3{grid-template-columns:1fr 1fr}
+  .metric{padding:14px 16px;border-bottom:1px solid var(--line)}
+  .dims{grid-template-columns:1fr 1fr}
+  .f-row,.f-row-3{grid-template-columns:1fr}
+  .tl{grid-template-columns:64px 16px 1fr}
+  .geo{display:none}
+  .drawer{width:100%}
+}
+@media (max-width:520px){
+  .metrics-4,.metrics-3{grid-template-columns:1fr}
+  .metric-val{font-size:28px}
+  .page-act{width:100%}
+  .btn{flex:1}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+<style>
+  .gpub{grid-template-columns:1fr 356px}
+  .rolecard{border:1px solid var(--line);border-radius:2px;padding:14px;margin-bottom:12px;background:#FBF9FD}
+  .rolecard .rh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+  .rolecard .rh b{font-size:13px;font-weight:500}
+  .prog{display:flex;align-items:center;gap:10px;margin-top:9px;font-size:11.5px;color:var(--ink3)}
+  .ptrack{width:130px;height:3px;background:var(--line);position:relative;flex:0 0 130px}
+  .ptrack i{position:absolute;left:0;top:0;height:3px;background:var(--teal)}
+  @media (max-width:1000px){.gpub{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="rail-mark">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="10" fill="none" stroke="#C9B8E4" stroke-width="1.2"/>
+        <path d="M16 2v8M16 22v8M2 16h8M22 16h8" stroke="#C9B8E4" stroke-width="1.2"/>
+        <circle cx="16" cy="16" r="2.4" fill="#8B5CF6"/>
+      </svg>
+      <div>
+        <div class="rail-name">OPC Hub</div>
+        <div class="rail-sub">粤港澳青年科创协作平台</div>
+      </div>
+    </div>
+    <div class="rail-role"><span class="lab">当前身份：</span><b>湾区智造科技 · 企业</b></div>
+    <nav class="rail-nav" aria-label="企业端主导航">
+      <div class="nav-group">招募</div>
+      <div class="nav-item" data-route="home">工作台</div>
+      <div class="nav-item" data-route="publish">发布招募</div>
+      <div class="nav-item" data-route="recruit">招募管理<span class="badge">3</span></div>
+      <div class="nav-group">合作</div>
+      <div class="nav-item" data-route="talent">人才库</div>
+      <div class="nav-item" data-route="coop">合作与契约</div>
+    </nav>
+    <div class="rail-foot">
+      <a href="#" onclick="parent.postMessage('opc:switch','*');return false;">切换角色 / 退出</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="wrap">
+
+      <!-- ---------- 工作台 ---------- -->
+      <section data-view="home">
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">工作台</h1>
+            <p class="page-sub">3 条招募需求正在收简历，14 份待处理。「智能养老看护终端」还差一名结构设计，报名里有两个匹配度 80 分以上的人选。</p>
+          </div>
+          <div class="page-act">
+            <span class="geo">22.53°N 113.89°E<br>深圳 · 前海</span>
+            <button class="btn ghost" onclick="UI.go('talent')">看看人才库</button>
+            <button class="btn" onclick="UI.go('publish')">发布招募</button>
+          </div>
+        </header>
+
+        <div class="metrics metrics-4">
+          <div class="metric"><div class="metric-val">3</div><div class="metric-lab">招募中的需求</div></div>
+          <div class="metric"><div class="metric-val">14</div><div class="metric-lab">待处理报名 <span class="metric-delta up">今日 +3</span></div></div>
+          <div class="metric"><div class="metric-val">2</div><div class="metric-lab">合作中的团队</div></div>
+          <div class="metric"><div class="metric-val">1,286</div><div class="metric-lab">本月项目曝光</div></div>
+        </div>
+
+        <div class="grid g-2" style="margin-bottom:20px">
+          <div class="panel">
+            <div class="panel-hd"><h2>待处理报名</h2><span class="hd-note">按匹配度排序</span></div>
+            <div class="rows" id="homeApplyList"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-hd"><h2>招募需求</h2><button class="btn quiet sm" onclick="UI.go('recruit')">全部</button></div>
+            <div class="rows" id="homeRecruitList"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-hd"><h2>合作里程碑</h2><span class="hd-note">最近 30 天</span></div>
+          <div class="rows">
+            <div class="row" onclick="UI.go('coop')">
+              <div class="row-main"><div class="row-title">湾区传感小组 · 第 2 周验收通过</div>
+                <div class="row-meta"><span>原型验证</span><span>数据采集链路跑通</span><span>11 月 7 日</span></div></div>
+              <div class="row-right"><span class="tag teal"><span class="dot"></span>已完成</span></div>
+            </div>
+            <div class="row" onclick="UI.go('coop')">
+              <div class="row-main"><div class="row-title">银龄科技小队 · 需求确认待评审</div>
+                <div class="row-meta"><span>需求确认</span><span>走访 3 家社区养老中心</span><span>待你确认</span></div></div>
+              <div class="row-right"><span class="tag amber"><span class="dot"></span>待评审</span></div>
+            </div>
+            <div class="row" onclick="UI.go('coop')">
+              <div class="row-main"><div class="row-title">湾区传感小组 · 第 3 周验收将至</div>
+                <div class="row-meta"><span>原型验证</span><span>11 月 16 日</span><span>误差需控制在 5% 内</span></div></div>
+              <div class="row-right"><span class="tag grey"><span class="dot"></span>进行中</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 发布招募 ---------- -->
+      <section data-view="publish" hidden>
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">发布招募</h1>
+            <p class="page-sub">把需求写清楚比写得漂亮更有用：岗位、人数、必备技能、交付物。发布后学校端会同步收到备案提醒。</p>
+          </div>
+          <div class="page-act">
+            <button class="btn ghost" onclick="UI.go('recruit')">查看已发布</button>
+            <button class="btn" onclick="submitPublish()">发布</button>
+          </div>
+        </header>
+
+        <div class="grid gpub">
+          <div>
+            <div class="panel" style="margin-bottom:20px">
+              <div class="panel-hd"><h2>需求信息</h2><span class="hd-note">必填项标 *</span></div>
+              <div class="panel-bd">
+                <div class="field"><label for="f-title">项目 / 需求名称 *</label>
+                  <input class="inp" id="f-title" placeholder="例如 智能养老看护终端 · 硬件与算法团队"></div>
+                <div class="f-row">
+                  <div class="field"><label for="f-type">类型</label>
+                    <select class="sel" id="f-type"><option>硬件原型</option><option>软件 / 应用</option><option>品牌 / 商业</option><option>科研验证</option><option>内容运营</option></select></div>
+                  <div class="field"><label for="f-city">协作城市</label>
+                    <select class="sel" id="f-city"><option>广州 / 深圳</option><option>广州</option><option>深圳</option><option>香港</option><option>澳门</option><option>不限</option></select></div>
+                </div>
+                <div class="field"><label for="f-desc">一句话简介 *</label>
+                  <input class="inp" id="f-desc" placeholder="做什么、为什么值得做，控制在 40 字内"></div>
+                <div class="field"><label for="f-goal">目标与交付物</label>
+                  <textarea class="txa" id="f-goal" placeholder="三个月后交什么：样机、报告、上线版本；怎么判断完成"></textarea></div>
+                <div class="f-row">
+                  <div class="field"><label for="f-start">开始（周）</label><input class="inp" id="f-start" value="第 3 周"></div>
+                  <div class="field"><label for="f-end">结束（周）</label><input class="inp" id="f-end" value="第 12 周"></div>
+                </div>
+                <div class="field"><label>支持方式（可多选）</label>
+                  <div class="chipset" id="supportChips">
+                    <span class="chip on">资金支持</span><span class="chip on">实验设备</span>
+                    <span class="chip">办公场地</span><span class="chip">企业导师</span><span class="chip">实习转正</span>
+                  </div>
+                </div>
+                <div class="field" style="margin-bottom:0"><label>学校偏好</label>
+                  <div class="chipset" id="schoolChips">
+                    <span class="chip on">暨南大学</span><span class="chip">中山大学</span><span class="chip">华南理工大学</span>
+                    <span class="chip">香港理工大学</span><span class="chip">澳门大学</span><span class="chip">不限</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-hd"><h2>岗位配置</h2><button class="btn quiet sm" onclick="addRole()">+ 添加岗位</button></div>
+              <div class="panel-bd" id="roleBox"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel" style="margin-bottom:20px">
+              <div class="panel-hd"><h2>发布预览</h2></div>
+              <div class="panel-bd">
+                <div style="font-size:13.5px;font-weight:500;margin-bottom:6px" id="pvTitle">（未填写名称）</div>
+                <div style="font-size:12px;color:var(--ink3);line-height:1.7" id="pvDesc">填写简介后会在这里出现预览。</div>
+                <div class="hr"></div>
+                <dl class="kv">
+                  <dt>岗位</dt><dd id="pvRoles">—</dd>
+                  <dt>周期</dt><dd id="pvCycle">第 3–12 周</dd>
+                  <dt>城市</dt><dd id="pvCity">广州 / 深圳</dd>
+                  <dt>发布方</dt><dd>湾区智造科技（智能硬件）</dd>
+                </dl>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-hd"><h2>发布后会怎样</h2></div>
+              <div class="panel-bd">
+                <ul style="margin:0;padding-left:18px;font-size:12.5px;color:var(--ink2);line-height:2">
+                  <li>进入学生端「找伙伴」的推荐池，按六维权重排序</li>
+                  <li>学校端收到一条项目备案，可查阅团队与契约</li>
+                  <li>报名者需要你处理，处理结果会通知对方</li>
+                  <li>合作达成后自动生成契约草稿，双方签署后生效</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ---------- 招募管理 ---------- -->
+      <section data-view="recruit" hidden>
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">招募管理</h1>
+            <p class="page-sub">报名不是简历堆，按岗位匹配度排序，处理完的会进入合作流程。</p>
+          </div>
+          <div class="page-act">
+            <button class="btn ghost" onclick="UI.go('publish')">新建招募</button>
+          </div>
+        </header>
+
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px" id="recFilter">
+          <span class="chip on" data-v="全部">全部</span>
+          <span class="chip" data-v="招募中">招募中</span>
+          <span class="chip" data-v="暂停">暂停</span>
+          <span class="chip" data-v="已结束">已结束</span>
+        </div>
+        <div class="panel"><div class="rows" id="recruitList"></div></div>
+      </section>
+
+      <!-- ---------- 人才库 ---------- -->
+      <section data-view="talent" hidden>
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">人才库</h1>
+            <p class="page-sub">企业视角只算四个维度：技能匹配、项目经验、投入稳定、地域可达。分数可以点开看依据。</p>
+          </div>
+          <div class="page-act">
+            <button class="btn ghost" onclick="UI.go('recruit')">查看报名</button>
+          </div>
+        </header>
+
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px" id="talFilter">
+          <span class="chip on" data-v="全部">全部</span>
+          <span class="chip" data-v="算法">算法</span>
+          <span class="chip" data-v="硬件">硬件</span>
+          <span class="chip" data-v="设计">设计</span>
+          <span class="chip" data-v="商业">商业</span>
+        </div>
+        <div class="panel"><div class="rows" id="talentList"></div></div>
+      </section>
+
+      <!-- ---------- 合作与契约 ---------- -->
+      <section data-view="coop" hidden>
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">合作与契约</h1>
+            <p class="page-sub">每个合作都有阶段验收与存证，争议时按契约条款处理，不靠聊天记录回忆。</p>
+          </div>
+          <div class="page-act">
+            <button class="btn ghost" onclick="UI.go('recruit')">招募管理</button>
+            <button class="btn" onclick="UI.toast('已导出合作清单')">导出清单</button>
+          </div>
+        </header>
+
+        <div class="metrics metrics-3" style="margin-bottom:24px">
+          <div class="metric"><div class="metric-val">2</div><div class="metric-lab">合作中的团队</div></div>
+          <div class="metric"><div class="metric-val">1</div><div class="metric-lab">待签署契约</div></div>
+          <div class="metric"><div class="metric-val">5</div><div class="metric-lab">已完成验收</div></div>
+        </div>
+
+        <div class="grid g-2e">
+          <div class="panel">
+            <div class="panel-hd"><h2>合作项目</h2><span class="hd-note">按进度</span></div>
+            <div class="rows" id="coopList"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-hd"><h2>契约要点</h2><span class="tag grey">模板 v1.3</span></div>
+            <div class="panel-bd">
+              <dl class="kv">
+                <dt>分工</dt><dd>按岗位配置固化，变更需双方确认并留痕</dd>
+                <dt>验收</dt><dd>每 2 周一次，未通过则顺延一周重排</dd>
+                <dt>成果归属</dt><dd>数据与材料归项目共有；企业享有优先合作权</dd>
+                <dt>保密</dt><dd>企业提供的非公开数据不得外传</dd>
+                <dt>退出</dt><dd>提前 7 天书面告知，已完成部分照契约结算</dd>
+              </dl>
+              <div class="note" style="margin-top:14px">契约由学生端签署后，企业端会收到存证哈希，学校端可查阅。</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>/* ============================================================
+   OPC Hub · 三端共用交互底座（原生 JS）
+   hash 路由 + 抽屉 + 弹窗 + toast + 通用渲染辅助
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  /* ---------- toast ---------- */
+  var toastEl = null;
+  function toast(msg) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'toast';
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = msg;
+    toastEl.classList.add('on');
+    clearTimeout(toastEl._t);
+    toastEl._t = setTimeout(function () { toastEl.classList.remove('on'); }, 2400);
+  }
+
+  /* ---------- hash 路由 ---------- */
+  function currentRoute() {
+    var h = location.hash.replace(/^#\/?/, '');
+    return h || 'home';
+  }
+  function go(route) {
+    if (!route) return;
+    location.hash = '/' + route;
+  }
+  function render() {
+    var route = currentRoute();
+    var views = $$('[data-view]');
+    var hit = false;
+    views.forEach(function (v) {
+      var on = v.getAttribute('data-view') === route;
+      v.hidden = !on;
+      if (on) hit = true;
+    });
+    if (!hit && views.length) { views[0].hidden = false; route = views[0].getAttribute('data-view'); }
+    $$('.nav-item').forEach(function (n) {
+      n.classList.toggle('on', n.getAttribute('data-route') === route);
+      n.setAttribute('aria-current', n.getAttribute('data-route') === route ? 'page' : 'false');
+    });
+    if (window.__onRoute) window.__onRoute(route);
+  }
+  window.addEventListener('hashchange', render);
+
+  /* ---------- 抽屉 ---------- */
+  var drawerEl = null, backdropEl = null;
+  function ensureDrawer() {
+    if (drawerEl) return;
+    backdropEl = document.createElement('div');
+    backdropEl.className = 'backdrop';
+    backdropEl.addEventListener('click', closeDrawer);
+    drawerEl = document.createElement('aside');
+    drawerEl.className = 'drawer';
+    drawerEl.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(backdropEl);
+    document.body.appendChild(drawerEl);
+  }
+  function openDrawer(opt) {
+    ensureDrawer();
+    drawerEl.innerHTML =
+      '<div class="drawer-hd"><div style="min-width:0">' +
+      '<h3>' + (opt.title || '') + '</h3>' +
+      (opt.sub ? '<p>' + opt.sub + '</p>' : '') +
+      '</div><button class="drawer-x" aria-label="关闭">×</button></div>' +
+      '<div class="drawer-bd">' + (opt.body || '') + '</div>' +
+      (opt.foot ? '<div class="drawer-ft">' + opt.foot + '</div>' : '');
+    drawerEl.querySelector('.drawer-x').addEventListener('click', closeDrawer);
+    drawerEl.classList.add('on');
+    backdropEl.classList.add('on');
+    drawerEl.setAttribute('aria-hidden', 'false');
+    if (opt.onOpen) opt.onOpen(drawerEl);
+  }
+  function closeDrawer() {
+    if (!drawerEl) return;
+    drawerEl.classList.remove('on');
+    backdropEl.classList.remove('on');
+    drawerEl.setAttribute('aria-hidden', 'true');
+  }
+
+  /* ---------- 弹窗 ---------- */
+  function openModal(opt) {
+    var mask = document.createElement('div');
+    mask.className = 'modal on';
+    mask.innerHTML =
+      '<div class="modal-box">' +
+      '<div class="modal-hd">' + (opt.title || '') + '</div>' +
+      '<div class="modal-bd">' + (opt.body || '') + '</div>' +
+      '<div class="modal-ft">' +
+      '<button class="btn ghost" data-m="cancel">' + (opt.cancelText || '取消') + '</button>' +
+      '<button class="btn' + (opt.danger ? ' danger' : '') + '" data-m="ok">' + (opt.okText || '确定') + '</button>' +
+      '</div></div>';
+    document.body.appendChild(mask);
+    function done() { mask.remove(); }
+    mask.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t === mask) { done(); return; }
+      var m = t.getAttribute && t.getAttribute('data-m');
+      if (m === 'cancel') done();
+      if (m === 'ok') {
+        var ok = true;
+        if (opt.onOk) ok = opt.onOk(mask.querySelector('.modal-bd'));
+        if (ok !== false) done();
+      }
+    });
+    if (opt.onOpen) opt.onOpen(mask.querySelector('.modal-bd'));
+    return mask;
+  }
+
+  /* ---------- ESC ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var modal = $('.modal.on');
+    if (modal) { modal.remove(); return; }
+    if (drawerEl && drawerEl.classList.contains('on')) closeDrawer();
+  });
+
+  /* ---------- 通用点击行为 ---------- */
+  document.addEventListener('click', function (e) {
+    var nav = e.target.closest && e.target.closest('.nav-item[data-route]');
+    if (nav) { e.preventDefault(); go(nav.getAttribute('data-route')); return; }
+
+    var tab = e.target.closest && e.target.closest('.tab[data-tab]');
+    if (tab) {
+      var group = tab.closest('[data-tabs]');
+      if (group) {
+        $$('.tab', group).forEach(function (t) { t.classList.remove('on'); });
+        tab.classList.add('on');
+        var scope = group.closest('.panel') || group.parentElement;
+        $$('[data-tabpanel]', scope).forEach(function (p) {
+          p.hidden = p.getAttribute('data-tabpanel') !== tab.getAttribute('data-tab');
+        });
+      }
+    }
+  });
+
+  /* ---------- 数字格式 ---------- */
+  function n(v) { return Number(v).toLocaleString('zh-CN'); }
+  function pct(v, d) { return (Number(v) * 100).toFixed(d === undefined ? 0 : d) + '%'; }
+
+  /* ---------- 图表兜底（无网络时用条形列表代替） ---------- */
+  function barsFallback(container, items, unit) {
+    var max = Math.max.apply(null, items.map(function (i) { return i.v; }));
+    container.innerHTML = '<div class="bars-fallback">' + items.map(function (i) {
+      return '<div class="bar-row"><span>' + i.k + '</span>' +
+        '<span class="bar-track"><i style="width:' + (i.v / max * 100).toFixed(1) + '%"></i></span>' +
+        '<span class="bar-num">' + i.v + (unit || '') + '</span></div>';
+    }).join('') + '</div>';
+  }
+  function hasECharts() { return typeof window.echarts !== 'undefined'; }
+
+  window.UI = {
+    $: $, $$: $$, toast: toast, go: go, render: render,
+    openDrawer: openDrawer, closeDrawer: closeDrawer, openModal: openModal,
+    n: n, pct: pct, barsFallback: barsFallback, hasECharts: hasECharts
+  };
+
+  document.addEventListener('DOMContentLoaded', render);
+  if (document.readyState !== 'loading') render();
+})();
+</script>
+<script>
+/* ================= 企业端数据 ================= */
+var RECRUITS = [
+  { id:'r1', title:'智能养老看护终端 · 硬件与算法团队', type:'硬件原型', city:'广州 / 深圳', status:'招募中', tone:'amber',
+    applied:8, need:4, filled:2, deadline:'11 月 30 日', desc:'毫米波 + 语音的跌倒检测终端，重点解决误报，交付可演示样机。',
+    roles:[{n:'算法（信号处理）',need:1,filled:1},{n:'结构设计',need:1,filled:0},{n:'嵌入式',need:1,filled:1},{n:'测试',need:1,filled:0}] },
+  { id:'r2', title:'跨境供应链数据看板', type:'软件 / 应用', city:'深圳', status:'招募中', tone:'amber',
+    applied:4, need:3, filled:1, deadline:'12 月 12 日', desc:'把跨境物流节点做成可查询看板，要求能写 SQL 与做可视化。',
+    roles:[{n:'数据工程',need:1,filled:1},{n:'前端可视化',need:1,filled:0},{n:'业务分析',need:1,filled:0}] },
+  { id:'r3', title:'青年科创内容运营', type:'内容运营', city:'不限', status:'暂停', tone:'grey',
+    applied:2, need:2, filled:0, deadline:'12 月 20 日', desc:'整理科创案例、写访谈稿，每周产出 2 篇。',
+    roles:[{n:'内容编辑',need:1,filled:0},{n:'视觉',need:1,filled:0}] }
+];
+
+var APPLICANTS = [
+  { id:'a1', name:'同学 A', ini:'A', tone:'', school:'华南理工大学 · 计算机技术 研一', role:'算法（信号处理）', score:92, time:'今天 09:41',
+    note:'做过毫米波信号处理，把误报率从 18% 降到 6%。' },
+  { id:'a2', name:'同学 B', ini:'B', tone:'t', school:'中山大学 · 工业设计 大三', role:'结构设计', score:86, time:'昨天 20:15',
+    note:'两款手板落地经验，能出结构图与装配方案。' },
+  { id:'a3', name:'同学 D', ini:'D', tone:'t', school:'澳门大学 · 生物医学工程 大三', role:'测试 / 用户研究', score:74, time:'昨天 16:02',
+    note:'社区场景访谈经验，可承担 20 人小样本验证。' },
+  { id:'a4', name:'徐承晖', ini:'徐', tone:'a', school:'暨南大学 · 计算机 大三', role:'嵌入式', score:68, time:'11 月 8 日',
+    note:'传感器数据采集与可视化，FPGA 基础。' }
+];
+
+var TALENTS = [
+  { id:'t1', name:'同学 A', ini:'A', tone:'', school:'华南理工大学', major:'计算机技术 · 研一', city:'广州', tag:'算法',
+    skills:['机器学习','信号处理','模型部署'], raw:{skill:94,exp:92,time:88,geo:92}, status:'可邀约' },
+  { id:'t2', name:'同学 B', ini:'B', tone:'t', school:'中山大学', major:'工业设计 · 大三', city:'广州', tag:'设计',
+    skills:['结构设计','手板','渲染'], raw:{skill:88,exp:84,time:86,geo:90}, status:'可邀约' },
+  { id:'t3', name:'同学 D', ini:'D', tone:'t', school:'澳门大学', major:'生物医学工程 · 大三', city:'澳门', tag:'商业',
+    skills:['用户研究','实验设计','英文文献'], raw:{skill:72,exp:70,time:76,geo:70}, status:'可邀约' },
+  { id:'t4', name:'同学 C', ini:'C', tone:'a', school:'暨南大学', major:'工商管理 · 大三', city:'广州', tag:'商业',
+    skills:['商业计划书','市场调研','申报材料'], raw:{skill:80,exp:78,time:88,geo:92}, status:'合作中' },
+  { id:'t5', name:'同学 E', ini:'E', tone:'a', school:'香港科技大学', major:'金融科技 · 大四', city:'香港', tag:'商业',
+    skills:['金融建模','区块链','粤英双语'], raw:{skill:76,exp:82,time:80,geo:58}, status:'可邀约' },
+  { id:'t6', name:'同学 F', ini:'F', tone:'', school:'华南理工大学', major:'电子信息 · 大四', city:'深圳', tag:'硬件',
+    skills:['嵌入式','PCB','传感器标定'], raw:{skill:90,exp:76,time:82,geo:84}, status:'可邀约' }
+];
+
+var COOPS = [
+  { name:'湾区传感小组', proj:'湾区生物传感原型', phase:'原型验证', progress:60, contract:'已签署', tone:'teal',
+    milestones:[{d:'11 月 7 日',t:'第 2 周验收',s:'通过'},{d:'11 月 16 日',t:'第 3 周验收',s:'待评审'},{d:'11 月 30 日',t:'第 4 周验收',s:'未开始'}] },
+  { name:'银龄科技小队', proj:'智能养老看护终端', phase:'需求确认', progress:25, contract:'待签署', tone:'amber',
+    milestones:[{d:'11 月 9 日',t:'需求确认评审',s:'待评审'},{d:'11 月 20 日',t:'方案评审',s:'未开始'}] }
+];
+
+var EDIMS = { skill:'技能匹配', exp:'项目经验', time:'投入稳定', geo:'地域可达' };
+function esc(s, w){
+  var sum = w.skill + w.exp + w.time + w.geo;
+  var t = 0, d = {};
+  Object.keys(w).forEach(function(k){ d[k] = (w[k]/sum) * s.raw[k]; t += d[k]; });
+  return { total:t, detail:d };
+}
+function f1(v){ return (Math.round(v*10)/10).toFixed(1); }
+
+/* ================= 工作台 ================= */
+function renderHome(){
+  document.getElementById('homeApplyList').innerHTML = APPLICANTS.slice(0,3).map(function(a){
+    return '<div class="row" onclick="openRecruit(\'r1\')">' +
+      '<div class="ava ' + a.tone + '">' + a.ini + '</div>' +
+      '<div class="row-main"><div class="row-title">' + a.name + ' <span class="tag line">' + a.role + '</span></div>' +
+      '<div class="row-meta"><span>' + a.school + '</span><span>' + a.time + '</span></div></div>' +
+      '<div class="row-right"><span class="score-num" style="font-size:17px">' + a.score + '</span>' +
+      '<button class="btn sm" onclick="event.stopPropagation();handleApp(this,\'' + a.name + '\',true)">通过</button></div></div>';
+  }).join('');
+
+  document.getElementById('homeRecruitList').innerHTML = RECRUITS.map(function(r){
+    var pv = Math.round(r.filled / r.need * 100);
+    return '<div class="row" onclick="openRecruit(\'' + r.id + '\')">' +
+      '<div class="row-main"><div class="row-title">' + r.title + '</div>' +
+      '<div class="row-meta"><span>' + r.applied + ' 份报名</span><span>' + r.filled + '/' + r.need + ' 已定</span><span>' + r.deadline + '</span></div>' +
+      '<div class="prog"><span class="ptrack"><i style="width:' + pv + '%"></i></span><span>' + pv + '%</span></div></div>' +
+      '<div class="row-right"><span class="tag ' + r.tone + '">' + r.status + '</span></div></div>';
+  }).join('');
+}
+/* ================= 发布招募 ================= */
+function roleForm(n, need, skills, task){
+  return '<div class="rolecard"><div class="rh"><b>岗位</b>' +
+    '<button class="btn quiet sm" onclick="this.closest(\'.rolecard\').remove();updatePreview()">删除</button></div>' +
+    '<div class="f-row"><div class="field"><label>岗位名称</label><input class="inp r-name" value="' + (n||'') + '" placeholder="例如 结构设计"></div>' +
+    '<div class="field"><label>需要人数</label><select class="sel r-need"><option' + (need===1?' selected':'') + '>1</option><option' + (need===2?' selected':'') + '>2</option><option>3</option></select></div></div>' +
+    '<div class="field"><label>必备技能</label><input class="inp r-skill" value="' + (skills||'') + '" placeholder="用顿号分隔，例如 建模、手板制作"></div>' +
+    '<div class="field" style="margin-bottom:0"><label>该岗位要做的事</label><input class="inp r-task" value="' + (task||'') + '" placeholder="一句话说清交付"></div></div>';
+}
+function renderRoles(){
+  var box = document.getElementById('roleBox');
+  if(!box.dataset.init){
+    box.dataset.init = '1';
+    box.innerHTML = roleForm('算法（信号处理）',1,'信号处理、Python','降误报，做到 6% 以下') +
+                    roleForm('结构设计',1,'建模、手板制作','外观与装配方案') +
+                    roleForm('嵌入式',1,'STM32、传感器标定','采集板与固件');
+  }
+  updatePreview();
+}
+function addRole(){
+  var d = document.createElement('div');
+  d.innerHTML = roleForm('',1,'','');
+  document.getElementById('roleBox').appendChild(d.firstChild);
+  updatePreview();
+}
+function readRoles(){
+  return Array.prototype.map.call(document.querySelectorAll('#roleBox .rolecard'), function(c){
+    return { n:c.querySelector('.r-name').value.trim() || '未命名岗位',
+             need:parseInt(c.querySelector('.r-need').value,10),
+             skills:c.querySelector('.r-skill').value.trim(),
+             task:c.querySelector('.r-task').value.trim() };
+  });
+}
+function updatePreview(){
+  var t = document.getElementById('f-title');
+  var d = document.getElementById('f-desc');
+  if(!t || !d) return;
+  document.getElementById('pvTitle').textContent = t.value.trim() || '（未填写名称）';
+  document.getElementById('pvDesc').textContent = d.value.trim() || '填写简介后会在这里出现预览。';
+  document.getElementById('pvCity').textContent = document.getElementById('f-city').value;
+  var roles = readRoles();
+  document.getElementById('pvRoles').innerHTML = roles.length
+    ? roles.map(function(r){ return r.n + ' ×' + r.need; }).join('、') + '（共 ' + roles.reduce(function(a,r){return a+r.need;},0) + ' 人）'
+    : '—';
+  document.getElementById('pvCycle').textContent = document.getElementById('f-start').value + ' – ' + document.getElementById('f-end').value;
+}
+['f-title','f-desc','f-city','f-start','f-end'].forEach(function(id){
+  var el = document.getElementById(id);
+  if(el){ el.addEventListener('input', updatePreview); el.addEventListener('change', updatePreview); }
+});
+
+function submitPublish(){
+  var t = document.getElementById('f-title').value.trim();
+  var d = document.getElementById('f-desc').value.trim();
+  if(!t){ UI.toast('请填写需求名称'); return; }
+  if(!d){ UI.toast('请填写一句话简介'); return; }
+  var roles = readRoles();
+  if(!roles.length){ UI.toast('至少配置一个岗位'); return; }
+  RECRUITS.unshift({
+    id:'r' + (Date.now()), title:t, type:document.getElementById('f-type').value,
+    city:document.getElementById('f-city').value, status:'招募中', tone:'amber',
+    applied:0, need:roles.reduce(function(a,r){return a+r.need;},0), filled:0,
+    deadline:'待定', desc:d, roles:roles.map(function(r){ return { n:r.n, need:r.need, filled:0 }; })
+  });
+  renderHome(); renderRecruit();
+  UI.toast('已发布：' + t + '，学校端会收到备案提醒');
+  setTimeout(function(){ UI.go('recruit'); }, 700);
+}
+
+/* ================= 招募管理 ================= */
+function renderRecruit(){
+  var on = document.querySelector('#recFilter .chip.on');
+  var f = on ? on.getAttribute('data-v') : '全部';
+  var list = RECRUITS.filter(function(r){ return f === '全部' || r.status === f; });
+  document.getElementById('recruitList').innerHTML = list.length ? list.map(function(r){
+    var pv = Math.round(r.filled / r.need * 100);
+    return '<div class="row" onclick="openRecruit(\'' + r.id + '\')">' +
+      '<div class="row-main"><div class="row-title">' + r.title + ' <span class="tag ' + r.tone + '">' + r.status + '</span></div>' +
+      '<div class="row-meta"><span>' + r.type + '</span><span>' + r.city + '</span><span>' + r.applied + ' 份报名</span><span>截止 ' + r.deadline + '</span></div>' +
+      '<div class="prog"><span class="ptrack"><i style="width:' + pv + '%"></i></span><span>' + r.filled + '/' + r.need + ' 已定</span></div></div>' +
+      '<div class="row-right"><button class="btn ghost sm" onclick="event.stopPropagation();openRecruit(\'' + r.id + '\')">处理报名</button></div></div>';
+  }).join('') : '<div class="empty">这个状态下没有招募需求</div>';
+}
+function openRecruit(id){
+  var r = RECRUITS.filter(function(x){ return x.id === id; })[0];
+  if(!r) return;
+  UI.openDrawer({
+    title: r.title, sub: r.type + ' · ' + r.city + ' · ' + r.applied + ' 份报名 · 截止 ' + r.deadline,
+    body:'<div class="note">' + r.desc + '</div>' +
+      '<div class="hr"></div><h3 style="font-family:var(--serif);font-size:14px;margin:0 0 6px">岗位</h3>' +
+      r.roles.map(function(x){
+        return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:12.5px">' +
+          '<span>' + x.n + '</span><span style="color:' + (x.filled>=x.need ? 'var(--teal)' : 'var(--amber)') + '">' + x.filled + '/' + x.need + '</span></div>';
+      }).join('') +
+      '<div class="hr"></div><h3 style="font-family:var(--serif);font-size:14px;margin:0 0 6px">报名者</h3>' +
+      APPLICANTS.map(function(a){
+        return '<div class="row" style="padding:12px 0">' +
+          '<div class="ava ' + a.tone + '">' + a.ini + '</div>' +
+          '<div class="row-main"><div class="row-title" style="font-size:13px">' + a.name + ' <span class="tag line">' + a.role + '</span></div>' +
+          '<div class="row-meta"><span>' + a.school + '</span><span>匹配 ' + a.score + '</span></div>' +
+          '<div style="font-size:11.5px;color:var(--ink3);margin-top:4px">' + a.note + '</div></div>' +
+          '<div class="row-right"><button class="btn ghost sm" onclick="handleApp(this,\'' + a.name + '\',false)">婉拒</button>' +
+          '<button class="btn sm" onclick="handleApp(this,\'' + a.name + '\',true)">通过</button></div></div>';
+      }).join(''),
+    foot:'<button class="btn ghost" onclick="UI.closeDrawer();UI.go(\'publish\')">调整需求</button>' +
+         '<button class="btn" onclick="UI.toast(\'已通知全部通过者，契约草稿已生成\')">批量通知</button>'
+  });
+}
+function handleApp(btn, name, ok){
+  var right = btn.closest('.row').querySelector('.row-right');
+  right.innerHTML = ok ? '<span class="tag teal"><span class="dot"></span>已通过</span>' : '<span class="tag grey"><span class="dot"></span>已婉拒</span>';
+  UI.toast(ok ? '已通过 ' + name + '，契约草稿待生成' : '已婉拒 ' + name + '，对方会收到通知');
+  if(ok && COOPS[0]){ COOPS[0].progress = Math.min(100, COOPS[0].progress + 2); renderHome(); renderCoop(); }
+}
+/* ================= 人才库 ================= */
+function renderTalent(){
+  var on = document.querySelector('#talFilter .chip.on');
+  var f = on ? on.getAttribute('data-v') : '全部';
+  var list = TALENTS.filter(function(t){ return f === '全部' || t.tag === f; });
+  document.getElementById('talentList').innerHTML = list.length ? list.map(function(t){
+    var sc = esc(t, {skill:0.40, exp:0.30, time:0.15, geo:0.15});
+    return '<div class="row" style="align-items:flex-start" onclick="openTalent(\'' + t.id + '\')">' +
+      '<div class="ava ' + t.tone + '">' + t.ini + '</div>' +
+      '<div class="row-main"><div class="row-title">' + t.name + ' <span class="tag line">' + t.city + '</span>' +
+      (t.status === '合作中' ? ' <span class="tag teal">合作中</span>' : '') + '</div>' +
+      '<div class="row-meta"><span>' + t.school + '</span><span>' + t.major + '</span><span>' + t.skills.join(' / ') + '</span></div>' +
+      '<div class="dims" style="grid-template-columns:repeat(4,1fr)">' + Object.keys(EDIMS).map(function(k){
+        return '<div class="dim"><div class="dim-top"><span>' + EDIMS[k] + '</span><b>' + f1(sc.detail[k]) + '</b></div>' +
+          '<div class="dim-track"><i style="width:' + Math.min(sc.detail[k]*2.2,100) + '%"></i></div></div>';
+      }).join('') + '</div></div>' +
+      '<div class="row-right" style="flex-direction:column;align-items:flex-end;gap:8px">' +
+      '<span class="score-num">' + f1(sc.total) + '</span>' +
+      '<button class="btn ghost sm" onclick="event.stopPropagation();inviteTalent(\'' + t.id + '\')">发起邀约</button></div></div>';
+  }).join('') : '<div class="empty">这个方向下暂无人才</div>';
+}
+function openTalent(id){
+  var t = TALENTS.filter(function(x){ return x.id === id; })[0];
+  if(!t) return;
+  var sc = esc(t, {skill:0.40, exp:0.30, time:0.15, geo:0.15});
+  var dims = Object.keys(EDIMS).map(function(k){
+    return '<div class="dim"><div class="dim-top"><span>' + EDIMS[k] + '</span><b>' + f1(sc.detail[k]) + '</b></div>' +
+      '<div class="dim-track"><i style="width:' + Math.min(sc.detail[k]*2.2,100) + '%"></i></div></div>';
+  }).join('');
+  UI.openDrawer({
+    title: t.name, sub: t.school + ' · ' + t.major + ' · ' + t.city,
+    body:'<div class="note">每周可投入 10 小时，线上为主，每两周可到企业一次；两个校内项目，一段企业实习。</div>' +
+      '<div class="hr"></div><h3 style="font-family:var(--serif);font-size:14px;margin:0 0 10px">分项依据（总分 ' + f1(sc.total) + '）</h3>' +
+      '<div class="dims" style="grid-template-columns:1fr 1fr">' + dims + '</div>',
+    foot:'<button class="btn ghost" onclick="UI.closeDrawer();UI.toast(\'已加入关注列表\')">关注</button>' +
+         '<button class="btn" onclick="UI.closeDrawer();inviteTalent(\'' + t.id + '\')">发起邀约</button>'
+  });
+}
+function inviteTalent(id){
+  var t = TALENTS.filter(function(x){ return x.id === id; })[0];
+  var opts = RECRUITS.filter(function(r){ return r.status === '招募中'; })
+    .map(function(r){ return '<option>' + r.title + '</option>'; }).join('');
+  UI.openModal({
+    title:'向 ' + t.name + ' 发起邀约',
+    body:'<div class="field"><label>关联招募需求</label><select class="sel">' + opts + '</select></div>' +
+      '<div class="field"><label>岗位</label><input class="inp" placeholder="例如 结构设计"></div>' +
+      '<div class="field" style="margin-bottom:0"><label>说明</label><textarea class="txa">项目周期 8 周，每周约 8 小时，提供设备与导师支持。</textarea></div>',
+    okText:'发送邀约',
+    onOk:function(){
+      t.status = '已邀约'; renderTalent(); renderHome();
+      UI.toast('邀约已发送，对方在学生端消息中心可见');
+      return true;
+    }
+  });
+}
+/* ================= 合作 ================= */
+function renderCoop(){
+  document.getElementById('coopList').innerHTML = COOPS.map(function(c,i){
+    return '<div class="row" onclick="openCoop(' + i + ')">' +
+      '<div class="row-main"><div class="row-title">' + c.name + ' <span class="tag ' + c.tone + '">' + c.contract + '</span></div>' +
+      '<div class="row-meta"><span>' + c.proj + '</span><span>' + c.phase + '</span></div>' +
+      '<div class="prog"><span class="ptrack"><i style="width:' + c.progress + '%"></i></span><span>' + c.progress + '%</span></div></div>' +
+      '<div class="row-right"><button class="btn ghost sm" onclick="event.stopPropagation();openCoop(' + i + ')">查看契约</button></div></div>';
+  }).join('');
+}
+function openCoop(i){
+  var c = COOPS[i];
+  var ms = c.milestones.map(function(m){
+    var tone = m.s === '通过' ? 'var(--teal)' : m.s === '待评审' ? 'var(--amber)' : 'var(--line2)';
+    return '<div class="tl-week">' + m.d + '</div>' +
+      '<div class="tl-axis"><span class="tl-dot" style="background:' + tone + '"></span></div>' +
+      '<div class="tl-body"><h4>' + m.t + '</h4><p>' + m.s + '</p></div>';
+  }).join('');
+  UI.openDrawer({
+    title: c.name, sub: c.proj + ' · ' + c.phase + ' · ' + c.contract,
+    body:'<dl class="kv"><dt>进度</dt><dd>' + c.progress + '%（按阶段验收累计）</dd>' +
+      '<dt>契约</dt><dd>' + c.contract + '，存证哈希 0x5c19…a7e3</dd>' +
+      '<dt>企业投入</dt><dd>设备 2 台、导师 1 名、经费 3 万元</dd></dl>' +
+      '<div class="hr"></div><h3 style="font-family:var(--serif);font-size:14px;margin:0 0 14px">里程碑</h3>' +
+      '<div class="tl">' + ms + '</div>',
+    foot:(c.contract === '待签署'
+      ? '<button class="btn" onclick="signCoop(' + i + ')">提醒学生签署</button>'
+      : '<button class="btn ghost" onclick="UI.toast(\'已提醒对方提交第 3 周材料\')">催办验收</button>') +
+      '<button class="btn" onclick="UI.closeDrawer();UI.go(\'recruit\')">追加招募</button>'
+  });
+}
+function signCoop(i){
+  COOPS[i].contract = '待学生签署';
+  renderCoop(); UI.closeDrawer();
+  UI.toast('已提醒学生签署契约，学生端会收到待办');
+}
+/* ================= chip 选择 ================= */
+document.addEventListener('click', function(e){
+  var chip = e.target.closest && e.target.closest('#recFilter .chip, #talFilter .chip');
+  if(!chip) return;
+  Array.prototype.forEach.call(chip.parentElement.querySelectorAll('.chip'), function(c){ c.classList.remove('on'); });
+  chip.classList.add('on');
+  if(chip.parentElement.id === 'recFilter') renderRecruit();
+  if(chip.parentElement.id === 'talFilter') renderTalent();
+});
+document.addEventListener('click', function(e){
+  var chip = e.target.closest && e.target.closest('#supportChips .chip, #schoolChips .chip');
+  if(!chip) return;
+  chip.classList.toggle('on');
+  if(chip.parentElement.id === 'schoolChips' && chip.classList.contains('on') && chip.textContent === '不限'){
+    Array.prototype.forEach.call(chip.parentElement.querySelectorAll('.chip'), function(c){ if(c !== chip) c.classList.remove('on'); });
+  }
+});
+
+/* ================= 启动 ================= */
+renderHome(); renderRoles(); renderRecruit(); renderTalent(); renderCoop();
+window.__onRoute = function(r){
+  if(r === 'home') renderHome();
+  if(r === 'publish'){ renderRoles(); updatePreview(); }
+  if(r === 'recruit') renderRecruit();
+  if(r === 'talent') renderTalent();
+  if(r === 'coop') renderCoop();
+};
+</script>
+<script>
+/* 直接在独立标签页打开本页时，角色切换走多页跳转 */
+window.addEventListener('message', function (e) {
+  var d = e.data;
+  if (typeof d !== 'string' || d.indexOf('opc:') !== 0) return;
+  if (window.parent !== window) return;
+  var k = d.slice(4);
+  location.href = 'index.html#' + (k === 'switch' ? 'entry' : k);
+});
+</script>
+</body>
+
+</html>

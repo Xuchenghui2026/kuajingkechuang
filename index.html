@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>粤港澳青年科创 OPC Hub · 青年科创协作平台</title>
+<meta name="description" content="粤港澳青年科创 OPC Hub：学生、企业、学校三类角色共用一套账号与项目流程，从组队、立项到契约存证与验收。">
+<meta property="og:title" content="粤港澳青年科创 OPC Hub">
+<meta property="og:description" content="学生、企业、学校三类角色共用一套账号与项目流程。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%232C1E4A'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23C9B8E4' stroke-width='1.4'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%238B5CF6'/%3E%3C/svg%3E">
+<style>
+  :root{--brand:#4F3A82;--brand-d:#2C1E4A;--brand-l:#8B5CF6;--paper:#F6F3F8;--ink:#241A33}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",-apple-system,"Segoe UI",sans-serif;
+    background:var(--paper);color:var(--ink);display:flex;flex-direction:column;
+  }
+  .bar{
+    flex:0 0 auto;display:flex;align-items:center;gap:18px;padding:0 18px;height:54px;
+    background:var(--brand-d);color:#EFE9F7;
+  }
+  .mark{display:flex;align-items:center;gap:9px;flex:0 0 auto;
+    font-family:"Noto Serif SC","Songti SC","STSong","SimSun",serif;font-size:15px;letter-spacing:.02em}
+  .mark svg{width:22px;height:22px;flex:0 0 22px}
+  .tabs{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;overflow-y:hidden}
+  .tabs button{
+    background:none;border:0;height:54px;padding:0 14px;cursor:pointer;
+    font-family:inherit;font-size:13px;color:#A797C2;white-space:nowrap;
+    border-bottom:2px solid transparent;
+  }
+  .tabs button:hover{color:#EFE9F7}
+  .tabs button.on{color:#fff;border-bottom-color:var(--brand-l)}
+  .tabs button:focus-visible{outline:2px solid var(--brand-l);outline-offset:-4px}
+  .note{flex:0 0 auto;font-size:11px;color:#8F7DB3;letter-spacing:.02em}
+  main{flex:1;min-height:0;position:relative;background:var(--paper)}
+  iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--paper)}
+  iframe[hidden]{display:none}
+  @media (max-width:640px){
+    .bar{gap:10px;padding:0 10px}
+    .tabs button{padding:0 10px;font-size:12.5px}
+    .note{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="mark">
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <circle cx="16" cy="16" r="10" fill="none" stroke="#C9B8E4" stroke-width="1.4"/>
+      <path d="M16 2v8M16 22v8M2 16h8M22 16h8" stroke="#C9B8E4" stroke-width="1.4"/>
+      <circle cx="16" cy="16" r="2.4" fill="#8B5CF6"/>
+    </svg>
+    <span>OPC Hub</span>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="切换角色端">
+    <button type="button" data-k="stu" class="on" aria-pressed="true">学生端</button>
+    <button type="button" data-k="ent" aria-pressed="false">企业端</button>
+    <button type="button" data-k="sch" aria-pressed="false">学校端</button>
+    <button type="button" data-k="entry" aria-pressed="false">入口 / 登录</button>
+  </nav>
+  <div class="note">粤港澳 · 青年科创协作</div>
+</header>
+<main>
+  <iframe id="f-stu" title="学生端" src="stu.html"></iframe>
+  <iframe id="f-ent" title="企业端" src="ent.html" hidden></iframe>
+  <iframe id="f-sch" title="学校端" src="sch.html" hidden></iframe>
+  <iframe id="f-entry" title="平台入口" src="entry.html" hidden></iframe>
+</main>
+<script>
+(function () {
+  'use strict';
+  var KEYS = ['stu', 'ent', 'sch', 'entry'];
+
+  function activate(k, push) {
+    if (KEYS.indexOf(k) < 0) k = 'stu';
+    KEYS.forEach(function (x) {
+      var f = document.getElementById('f-' + x);
+      if (f) f.hidden = (x !== k);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#tabs button'), function (b) {
+      var on = b.getAttribute('data-k') === k;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    if (push !== false && ('#' + k) !== location.hash) {
+      history.replaceState(null, '', '#' + k);
+    }
+  }
+
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('button[data-k]') : null;
+    if (btn) activate(btn.getAttribute('data-k'));
+  });
+
+  window.addEventListener('message', function (e) {
+    var d = e.data;
+    if (typeof d !== 'string' || d.indexOf('opc:') !== 0) return;
+    var k = d.slice(4);
+    activate(k === 'switch' ? 'entry' : k);
+  });
+
+  window.addEventListener('hashchange', function () {
+    activate(location.hash.replace('#', ''), false);
+  });
+
+  activate(location.hash.replace('#', '') || 'stu', false);
+})();
+</script>
+</body>
+</html>

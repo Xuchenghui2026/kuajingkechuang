@@ -1,0 +1,1471 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>学生端 · 粤港澳青年科创 OPC Hub</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%232C1E4A'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23C9B8E4' stroke-width='1.4'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%238B5CF6'/%3E%3C/svg%3E">
+<style>/* ============================================================
+   OPC Hub · 三端共用视觉底座
+   设计方向：「湾区坐标」——深墨紫侧栏 + 纸白内容区 + 衬线标题
+   紫色作为品牌色克制使用，数据用青绿、待办用琥珀
+   ============================================================ */
+
+:root{
+  --paper:#F6F3F8;
+  --surface:#FFFFFF;
+  --ink:#241A33;
+  --ink2:#584A6C;
+  --ink3:#8B7D9D;
+  --line:#E5DFEC;
+  --line2:#D5CBE0;
+  --brand:#4F3A82;
+  --brand-d:#2C1E4A;
+  --brand-l:#8B5CF6;
+  --brand-w:#EFE9F8;
+  --teal:#1B7469;
+  --teal-w:#E3F0ED;
+  --amber:#96651F;
+  --amber-w:#F6EDDD;
+  --red:#9C3A33;
+  --red-w:#FAE8E6;
+  --serif:"Noto Serif SC","Songti SC","SimSun",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono","SFMono-Regular",Consolas,"Courier New",monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:14px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+table{border-collapse:collapse;width:100%}
+input,select,textarea{font-family:inherit;font-size:14px}
+
+/* ---------- 布局：侧栏 + 主区 ---------- */
+.shell{display:flex;min-height:100vh}
+
+.rail{
+  width:252px;flex:0 0 252px;
+  background:var(--brand-d);
+  color:#EDE7F6;
+  padding:26px 0 18px;
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;
+  border-right:1px solid #3A2A5C;
+}
+.rail-mark{display:flex;gap:12px;align-items:flex-start;padding:0 20px 20px}
+.rail-mark svg{width:32px;height:32px;flex:0 0 32px;opacity:.9}
+.rail-name{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:.02em;line-height:1.2}
+.rail-sub{font-size:11px;color:#A797C2;margin-top:5px;letter-spacing:.04em}
+.rail-role{
+  margin:0 20px 18px;padding:7px 10px;
+  border:1px solid #4A3573;border-radius:2px;
+  font-size:11.5px;color:#C9B8E4;letter-spacing:.06em;
+  display:flex;align-items:flex-start;gap:7px;line-height:1.55;
+}
+.rail-role .lab{flex:0 0 auto;white-space:nowrap}
+.rail-role b{color:#F1EAFB;font-weight:500}
+.rail-nav{flex:1;overflow-y:auto;padding-bottom:12px}
+.rail-nav::-webkit-scrollbar{width:0}
+.nav-group{padding:14px 20px 6px;font-size:10.5px;letter-spacing:.14em;color:#8F7DB3}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 20px 9px 20px;
+  font-size:13px;color:#CBBDE3;cursor:pointer;
+  border-left:2px solid transparent;
+  transition:background .15s,color .15s;
+}
+.nav-item:hover{background:#3A2960;color:#F2EBFC}
+.nav-item.on{background:#3A2960;color:#FFFFFF;border-left-color:var(--brand-l);font-weight:500}
+.nav-item .ic{width:16px;height:16px;flex:0 0 16px;opacity:.75}
+.nav-item.on .ic{opacity:1}
+.nav-item .badge{
+  margin-left:auto;font-size:10.5px;line-height:1;
+  background:var(--brand-l);color:#fff;border-radius:9px;padding:3px 6px;
+  font-variant-numeric:tabular-nums;
+}
+.rail-foot{padding:14px 20px 0;border-top:1px solid #3A2A5C;font-size:12px}
+.rail-foot a{color:#A797C2;display:flex;align-items:center;gap:8px;padding:6px 0}
+.rail-foot a:hover{color:#EDE7F6}
+
+.main{flex:1;min-width:0;background:var(--paper)}
+.wrap{max-width:1260px;margin:0 auto;padding:30px 40px 64px}
+
+/* ---------- 页头 ---------- */
+.pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:26px}
+.page-title{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1.25;margin:0;letter-spacing:.01em}
+.page-sub{margin:7px 0 0;font-size:12.5px;color:var(--ink3);max-width:62ch;line-height:1.7}
+.page-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.geo{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--ink3);
+  border-left:1px solid var(--line2);padding-left:12px;line-height:1.9;text-align:right;
+}
+
+/* ---------- 按钮 ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;justify-content:center;
+  height:34px;padding:0 14px;border-radius:2px;
+  border:1px solid var(--brand);background:var(--brand);color:#fff;
+  font-size:13px;cursor:pointer;transition:background .15s,border-color .15s;white-space:nowrap;
+}
+.btn:hover{background:#3E2C68;border-color:#3E2C68}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--brand);border-color:var(--line2)}
+.btn.ghost:hover{background:var(--brand-w);border-color:var(--brand)}
+.btn.quiet{background:transparent;color:var(--ink2);border-color:transparent;padding:0 8px}
+.btn.quiet:hover{background:var(--brand-w);color:var(--brand)}
+.btn.sm{height:28px;padding:0 10px;font-size:12px}
+.btn.danger{background:transparent;color:var(--red);border-color:#DFB7B3}
+.btn.danger:hover{background:var(--red-w);border-color:var(--red)}
+.btn.wide{width:100%}
+
+/* ---------- 指标条 ---------- */
+.metrics{
+  display:grid;gap:0;border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);
+  margin-bottom:28px;background:var(--surface);
+}
+.metrics-4{grid-template-columns:repeat(4,1fr)}
+.metrics-3{grid-template-columns:repeat(3,1fr)}
+.metric{padding:18px 22px 16px;border-right:1px solid var(--line)}
+.metric:last-child{border-right:0}
+.metric-val{font-family:var(--serif);font-size:34px;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.metric-val small{font-family:var(--sans);font-size:12px;color:var(--ink3);margin-left:4px;font-weight:400}
+.metric-lab{margin-top:6px;font-size:12px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.metric-delta{font-size:11px;font-variant-numeric:tabular-nums}
+.up{color:var(--teal)}
+.down{color:var(--red)}
+
+/* ---------- 面板 ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:2px}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.panel-hd h2{font-family:var(--serif);font-size:15.5px;font-weight:600;margin:0;letter-spacing:.02em}
+.panel-hd .hd-note{font-size:11.5px;color:var(--ink3)}
+.panel-bd{padding:18px}
+.panel-bd.flush{padding:0}
+.grid{display:grid;gap:20px}
+.g-2{grid-template-columns:1.55fr 1fr}
+.g-2e{grid-template-columns:1fr 1fr}
+.g-3{grid-template-columns:repeat(3,1fr)}
+
+/* ---------- 行式列表（不用浮卡） ---------- */
+.rows{display:block}
+.row{
+  display:flex;align-items:center;gap:14px;
+  padding:15px 18px;border-bottom:1px solid var(--line);
+  cursor:pointer;background:transparent;transition:background .12s;
+  border-left:2px solid transparent;
+}
+.row:last-child{border-bottom:0}
+.row:hover{background:#FBF9FD}
+.row.sel{background:var(--brand-w);border-left-color:var(--brand-l)}
+.row-main{min-width:0;flex:1}
+.row-title{font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.row-meta{font-size:11.5px;color:var(--ink3);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap}
+.row-meta span{white-space:nowrap}
+.row-right{margin-left:auto;text-align:right;flex:0 0 auto;display:flex;align-items:center;gap:10px}
+
+/* ---------- 标签 ---------- */
+.tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;line-height:1.9;padding:0 7px;border-radius:2px;
+  background:var(--brand-w);color:var(--brand);border:1px solid #DDD2EF;white-space:nowrap;
+}
+.tag .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.tag.teal{background:var(--teal-w);color:var(--teal);border-color:#C5DED9}
+.tag.amber{background:var(--amber-w);color:var(--amber);border-color:#E4D3B6}
+.tag.red{background:var(--red-w);color:var(--red);border-color:#E7C3BF}
+.tag.grey{background:#F3F0F6;color:var(--ink2);border-color:var(--line2)}
+.tag.line{background:transparent;border-color:var(--line2);color:var(--ink2)}
+.tag.lg{font-size:12px;padding:1px 9px}
+
+/* ---------- 表格 ---------- */
+.table-wrap{overflow-x:auto}
+.table{table-layout:fixed;min-width:760px}
+.table th,.table td{padding:11px 14px;text-align:left;font-size:12.5px;border-bottom:1px solid var(--line);vertical-align:middle}
+.table th{font-size:11px;letter-spacing:.08em;color:var(--ink3);font-weight:500;background:#FBF9FD;border-bottom:1px solid var(--line2)}
+.table td{color:var(--ink2)}
+.table td .strong{color:var(--ink);font-weight:500}
+.table .num{font-variant-numeric:tabular-nums;text-align:right}
+.table tr:hover td{background:#FBF9FD}
+
+/* ---------- 匹配分 ---------- */
+.score{display:flex;align-items:center;gap:10px}
+.score-num{font-family:var(--serif);font-size:20px;line-height:1;font-variant-numeric:tabular-nums;color:var(--brand)}
+.score-bar{height:3px;width:78px;background:var(--line);position:relative}
+.score-bar i{position:absolute;left:0;top:0;height:3px;background:var(--brand-l)}
+.dims{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 22px;margin-top:12px}
+.dim{font-size:11.5px;color:var(--ink2)}
+.dim-top{display:flex;justify-content:space-between;margin-bottom:4px}
+.dim-top b{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:500}
+.dim-track{height:2px;background:var(--line);position:relative}
+.dim-track i{position:absolute;left:0;top:0;height:2px;background:#B39BE0}
+
+/* ---------- 头像 ---------- */
+.ava{
+  width:38px;height:38px;flex:0 0 38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:15px;font-weight:600;
+  background:var(--brand-w);color:var(--brand);border:1px solid #DDD2EF;
+}
+.ava.t{background:var(--teal-w);color:var(--teal);border-color:#C5DED9}
+.ava.a{background:var(--amber-w);color:var(--amber);border-color:#E4D3B6}
+.ava.lg{width:56px;height:56px;flex:0 0 56px;font-size:20px}
+
+/* ---------- 表单 ---------- */
+.field{margin-bottom:16px}
+.field > label{display:block;font-size:12px;color:var(--ink2);margin-bottom:6px;letter-spacing:.02em}
+.field .hint{font-size:11px;color:var(--ink3);margin-top:5px}
+.inp,.sel,.txa{
+  width:100%;height:36px;padding:0 10px;border:1px solid var(--line2);border-radius:2px;
+  background:#fff;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s;
+}
+.inp:focus,.sel:focus,.txa:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(139,92,246,.12)}
+.txa{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line-height:1.65}
+.inp::placeholder,.txa::placeholder{color:#B0A5BE}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f-row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.chipset{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  font-size:12px;padding:4px 10px;border:1px solid var(--line2);border-radius:2px;
+  background:#fff;color:var(--ink2);cursor:pointer;transition:.12s;user-select:none;
+}
+.chip:hover{border-color:var(--brand);color:var(--brand)}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.chip.on:hover{background:#3E2C68}
+.chip.add{border-style:dashed;color:var(--ink3)}
+
+/* 滑杆 */
+.slider-row{display:grid;grid-template-columns:76px 1fr 40px;gap:12px;align-items:center;margin-bottom:9px}
+.slider-row label{font-size:12px;color:var(--ink2)}
+.slider-row output{font-family:var(--mono);font-size:11.5px;color:var(--brand);text-align:right}
+input[type=range]{-webkit-appearance:none;appearance:none;height:2px;background:var(--line2);outline:none;width:100%}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:13px;height:13px;border-radius:50%;
+  background:var(--brand-l);border:2px solid #fff;box-shadow:0 0 0 1px var(--brand-l);cursor:pointer;
+}
+
+/* ---------- 时间轴 ---------- */
+.tl{display:grid;grid-template-columns:96px 18px 1fr;row-gap:16px}
+.tl-week{font-family:var(--mono);font-size:11px;color:var(--ink3);text-align:right;padding-top:2px;font-variant-numeric:tabular-nums}
+.tl-axis{position:relative;justify-self:center;width:1px;background:var(--line2);height:100%}
+.tl-dot{position:absolute;left:50%;transform:translateX(-50%);width:9px;height:9px;border-radius:50%;background:var(--brand-l);border:2px solid var(--paper);top:-1px}
+.tl-body{padding-bottom:2px}
+.tl-body h4{margin:0 0 4px;font-size:13px;font-weight:500}
+.tl-body p{margin:0;font-size:11.5px;color:var(--ink3);line-height:1.6}
+.tl-body .tag{margin-top:6px}
+
+/* ---------- 抽屉 ---------- */
+.backdrop{position:fixed;inset:0;background:rgba(36,26,51,.32);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
+.backdrop.on{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;height:100vh;width:500px;max-width:94vw;background:var(--surface);
+  border-left:1px solid var(--line2);transform:translateX(100%);transition:transform .24s cubic-bezier(.32,.72,.35,1);
+  z-index:61;display:flex;flex-direction:column;
+}
+.drawer.on{transform:none}
+.drawer-hd{display:flex;align-items:flex-start;gap:12px;padding:20px 22px 16px;border-bottom:1px solid var(--line)}
+.drawer-hd h3{margin:0;font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.35}
+.drawer-hd p{margin:6px 0 0;font-size:12px;color:var(--ink3)}
+.drawer-x{margin-left:auto;background:none;border:0;font-size:20px;line-height:1;color:var(--ink3);cursor:pointer;padding:2px 4px}
+.drawer-x:hover{color:var(--ink)}
+.drawer-bd{flex:1;overflow-y:auto;padding:20px 22px}
+.drawer-ft{border-top:1px solid var(--line);padding:14px 22px;display:flex;gap:10px;justify-content:flex-end;background:#FBF9FD}
+
+/* ---------- 弹窗 ---------- */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:70;padding:20px}
+.modal.on{display:flex}
+.modal-box{background:#fff;border:1px solid var(--line2);border-radius:2px;width:520px;max-width:100%;max-height:88vh;overflow:auto}
+.modal-hd{padding:18px 22px 14px;border-bottom:1px solid var(--line);font-family:var(--serif);font-size:18px;font-weight:600}
+.modal-bd{padding:18px 22px}
+.modal-ft{padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:#FBF9FD}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:36px;transform:translate(-50%,12px);
+  background:var(--brand-d);color:#F3EDFB;font-size:13px;padding:10px 18px;border-radius:2px;
+  opacity:0;pointer-events:none;transition:.22s;z-index:80;max-width:80vw;
+  box-shadow:0 6px 24px rgba(44,30,74,.24);
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- 数据可视化 ---------- */
+.chart{width:100%;height:300px}
+.chart.sm{height:240px}
+.chart-note{font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.7}
+.bars-fallback{padding:6px 0}
+.bar-row{display:grid;grid-template-columns:104px 1fr 48px;gap:10px;align-items:center;padding:5px 0;font-size:12px}
+.bar-track{height:8px;background:#F1ECF7;position:relative}
+.bar-track i{position:absolute;left:0;top:0;height:8px;background:var(--brand);opacity:.85}
+.bar-num{font-variant-numeric:tabular-nums;text-align:right;color:var(--ink2);font-size:11.5px}
+
+/* ---------- 其它 ---------- */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:0}
+.tab{
+  padding:9px 14px;font-size:12.5px;color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent;
+  background:none;border-top:0;border-left:0;border-right:0;
+}
+.tab.on{color:var(--brand);border-bottom-color:var(--brand);font-weight:500}
+.tab .n{font-variant-numeric:tabular-nums;color:var(--ink3);font-size:11px;margin-left:5px}
+.empty{padding:44px 20px;text-align:center;color:var(--ink3);font-size:12.5px}
+.kv{display:grid;grid-template-columns:96px 1fr;gap:8px 12px;font-size:12.5px}
+.kv dt{color:var(--ink3)}
+.kv dd{margin:0;color:var(--ink)}
+.note{background:#FBF7FE;border-left:2px solid var(--brand-l);padding:10px 14px;font-size:12px;color:var(--ink2);line-height:1.75}
+.hr{height:1px;background:var(--line);margin:18px 0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+/* ---------- 进度条 ---------- */
+.prog{display:flex;align-items:center;gap:10px;margin-top:9px;font-size:11px;color:var(--ink3)}
+.prog .ptrack{flex:1;max-width:240px;height:5px;background:#F0EBF7;position:relative}
+.prog .ptrack i{position:absolute;left:0;top:0;height:5px;background:var(--brand);opacity:.85}
+.prog span:last-child{font-variant-numeric:tabular-nums}
+
+/* ---------- 响应式 ---------- */
+@media (max-width:1080px){
+  .g-2,.g-2e,.g-3{grid-template-columns:1fr}
+  .wrap{padding:22px 20px 56px}
+}
+@media (max-width:820px){
+  .shell{flex-direction:column}
+  .rail{
+    width:100%;flex:none;height:auto;position:sticky;top:0;z-index:50;
+    padding:12px 0 0;border-right:0;border-bottom:1px solid #3A2A5C;
+  }
+  .rail-mark{padding:0 14px 10px}
+  .rail-mark svg{width:26px;height:26px;flex:0 0 26px}
+  .rail-name{font-size:15px}
+  .rail-sub{display:none}
+  .rail-role{margin:0 14px 10px;padding:5px 9px;font-size:10.5px}
+  .rail-nav{display:flex;overflow-x:auto;overflow-y:hidden;gap:0;padding:0 6px 0}
+  .nav-group{display:none}
+  .nav-item{padding:9px 12px;border-left:0;border-bottom:2px solid transparent;flex:0 0 auto;font-size:12.5px}
+  .nav-item.on{border-left:0;border-bottom-color:var(--brand-l);background:transparent}
+  .nav-item .badge{display:none}
+  .rail-foot{display:none}
+  .page-title{font-size:24px}
+  .metrics-4{grid-template-columns:1fr 1fr}
+  .metrics-3{grid-template-columns:1fr 1fr}
+  .metric{padding:14px 16px;border-bottom:1px solid var(--line)}
+  .dims{grid-template-columns:1fr 1fr}
+  .f-row,.f-row-3{grid-template-columns:1fr}
+  .tl{grid-template-columns:64px 16px 1fr}
+  .geo{display:none}
+  .drawer{width:100%}
+}
+@media (max-width:520px){
+  .metrics-4,.metrics-3{grid-template-columns:1fr}
+  .metric-val{font-size:28px}
+  .page-act{width:100%}
+  .btn{flex:1}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+<style>
+  .g-2r{grid-template-columns:340px 1fr}
+  .g-2p{grid-template-columns:300px 1fr}
+  .skill-line{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}
+  .skill-line:last-child{border-bottom:0}
+  .skill-line .name{width:104px;font-size:12.5px;flex:0 0 104px}
+  .skill-line .lv{font-size:10.5px;color:var(--ink3);width:38px;text-align:right;flex:0 0 38px}
+  .lvtrack{flex:1;height:2px;background:var(--line);position:relative}
+  .lvtrack i{position:absolute;left:0;top:0;height:2px;background:var(--brand-l)}
+  .proj-prog{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:11.5px;color:var(--ink3)}
+  .progbar{width:120px;height:3px;background:var(--line);position:relative;flex:0 0 120px}
+  .progbar i{position:absolute;left:0;top:0;height:3px;background:var(--teal)}
+  .msg{display:grid;grid-template-columns:288px 1fr;border:1px solid var(--line);background:var(--surface);min-height:460px;height:calc(100vh - 210px)}
+  .msg-list{border-right:1px solid var(--line);overflow-y:auto}
+  .msg-item{padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+  .msg-item:hover{background:#FBF9FD}
+  .msg-item.on{background:var(--brand-w)}
+  .msg-name{font-size:13px;font-weight:500;display:flex;justify-content:space-between;gap:8px}
+  .msg-name span{font-size:10.5px;color:var(--ink3);font-weight:400}
+  .msg-last{font-size:11.5px;color:var(--ink3);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .msg-thread{display:flex;flex-direction:column;min-width:0}
+  .msg-hd{padding:13px 18px;border-bottom:1px solid var(--line);font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center}
+  .msg-body{flex:1;overflow-y:auto;padding:18px}
+  .bubble{max-width:74%;margin-bottom:12px;font-size:12.5px;line-height:1.7}
+  .bubble .who{font-size:10.5px;color:var(--ink3);margin-bottom:3px}
+  .bubble .txt{padding:9px 12px;background:#F4F0F9;border-radius:2px;color:var(--ink)}
+  .bubble.me{margin-left:auto;text-align:right}
+  .bubble.me .txt{background:var(--brand);color:#fff;text-align:left}
+  .msg-input{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--line);background:#FBF9FD}
+  @media (max-width:900px){.g-2r,.g-2p{grid-template-columns:1fr}.msg{grid-template-columns:1fr;height:auto}.msg-list{max-height:220px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <!-- ===== 侧栏 ===== -->
+  <aside class="rail">
+    <div class="rail-mark">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="10" fill="none" stroke="#C9B8E4" stroke-width="1.2"/>
+        <path d="M16 2v8M16 22v8M2 16h8M22 16h8" stroke="#C9B8E4" stroke-width="1.2"/>
+        <circle cx="16" cy="16" r="2.4" fill="#8B5CF6"/>
+      </svg>
+      <div>
+        <div class="rail-name">OPC Hub</div>
+        <div class="rail-sub">粤港澳青年科创协作平台</div>
+      </div>
+    </div>
+    <div class="rail-role"><span class="lab">当前身份：</span><b>徐承晖 · 暨南大学</b></div>
+    <nav class="rail-nav" aria-label="学生端主导航">
+      <div class="nav-group">协作</div>
+      <div class="nav-item" data-route="home">工作台</div>
+      <div class="nav-item" data-route="match">找伙伴</div>
+      <div class="nav-item" data-route="team">我的团队<span class="badge">2</span></div>
+      <div class="nav-item" data-route="project">项目共创</div>
+      <div class="nav-group">个人</div>
+      <div class="nav-item" data-route="profile">我的画像</div>
+      <div class="nav-item" data-route="resource">科创资源</div>
+      <div class="nav-item" data-route="message">消息</div>
+    </nav>
+    <div class="rail-foot">
+      <a href="#" onclick="parent.postMessage('opc:switch','*');return false;">切换角色 / 退出</a>
+    </div>
+  </aside>
+
+  <!-- ===== 主区 ===== -->
+  <main class="main">
+    <div class="wrap">
+
+      <!-- ---------- 工作台 ---------- -->
+      <section data-view="home">
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">工作台</h1>
+            <p class="page-sub">今天有 2 条新的伙伴匹配、1 个待处理邀请。「湾区生物传感原型」第 3 周验收还有 6 天，岗位还差一名结构设计。</p>
+          </div>
+          <div class="page-act">
+            <span class="geo">22.59°N 113.30°E<br>广州 · 番禺</span>
+            <button class="btn ghost" onclick="UI.go('profile')">完善画像</button>
+            <button class="btn" onclick="UI.go('project')">发布项目</button>
+          </div>
+        </header>
+
+        <div class="metrics metrics-4">
+          <div class="metric"><div class="metric-val">12<small>位</small></div><div class="metric-lab">可匹配伙伴</div></div>
+          <div class="metric"><div class="metric-val">2</div><div class="metric-lab">待处理邀请 <span class="metric-delta up">今日 +1</span></div></div>
+          <div class="metric"><div class="metric-val">2</div><div class="metric-lab">进行中的项目</div></div>
+          <div class="metric"><div class="metric-val">38<small>h</small></div><div class="metric-lab">本学期协作时长</div></div>
+        </div>
+
+        <div class="grid g-2" style="margin-bottom:20px">
+          <div class="panel">
+            <div class="panel-hd">
+              <h2>优先匹配</h2>
+              <span class="hd-note">按当前权重计算</span>
+            </div>
+            <div class="rows" id="homeMatchList"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-hd"><h2>待办</h2><span class="hd-note">4 项</span></div>
+            <div class="rows">
+              <div class="row" onclick="UI.go('team')">
+                <div class="row-main">
+                  <div class="row-title">「湾区传感小组」邀请你担任算法负责人</div>
+                  <div class="row-meta"><span>同学 A 发起</span><span>剩余 2 天失效</span></div>
+                </div>
+                <div class="row-right"><span class="tag amber"><span class="dot"></span>待回复</span></div>
+              </div>
+              <div class="row" onclick="UI.go('project')">
+                <div class="row-main">
+                  <div class="row-title">项目契约待你签署</div>
+                  <div class="row-meta"><span>湾区生物传感原型</span><span>分工与成果归属已确认</span></div>
+                </div>
+                <div class="row-right"><span class="tag amber"><span class="dot"></span>待签署</span></div>
+              </div>
+              <div class="row" onclick="UI.go('resource')">
+                <div class="row-main">
+                  <div class="row-title">青年科创种子基金开始申报</div>
+                  <div class="row-meta"><span>最高 50 万元启动支持</span><span>11 月 28 日截止</span></div>
+                </div>
+                <div class="row-right"><span class="tag teal"><span class="dot"></span>新</span></div>
+              </div>
+              <div class="row" onclick="UI.go('profile')">
+                <div class="row-main">
+                  <div class="row-title">简历解析结果待你校准</div>
+                  <div class="row-meta"><span>识别出 6 项技能</span><span>2 项置信度偏低</span></div>
+                </div>
+                <div class="row-right"><span class="tag grey"><span class="dot"></span>待确认</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:20px">
+          <div class="panel-hd"><h2>我的项目</h2><button class="btn quiet sm" onclick="UI.go('project')">全部项目</button></div>
+          <div class="rows">
+            <div class="row" onclick="UI.go('project')">
+              <div class="row-main">
+                <div class="row-title">湾区生物传感原型 <span class="tag">招募中</span></div>
+                <div class="row-meta"><span>负责人：徐承晖</span><span>岗位 3/5 已填</span><span>第 3 周 · 原型验证</span></div>
+                <div class="proj-prog"><span>团队组建</span><span class="progbar"><i style="width:60%"></i></span><span>60%</span></div>
+              </div>
+              <div class="row-right"><button class="btn ghost sm" onclick="event.stopPropagation();UI.go('project')">继续</button></div>
+            </div>
+            <div class="row" onclick="UI.go('project')">
+              <div class="row-main">
+                <div class="row-title">校园 RAG 知识库 <span class="tag teal">进行中</span></div>
+                <div class="row-meta"><span>负责人：徐承晖</span><span>团队 4/4 已满</span><span>第 6 周 · 联调测试</span></div>
+                <div class="proj-prog"><span>阶段完成</span><span class="progbar"><i style="width:75%"></i></span><span>75%</span></div>
+              </div>
+              <div class="row-right"><button class="btn ghost sm" onclick="event.stopPropagation();UI.go('project')">继续</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-hd"><h2>为你推送的科创资源</h2><button class="btn quiet sm" onclick="UI.go('resource')">资源库</button></div>
+          <div class="rows" id="homeResList"></div>
+        </div>
+      </section>
+
+      <!-- ---------- 我的画像 ---------- -->
+      <section data-view="profile" hidden>
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">我的画像</h1>
+            <p class="page-sub">画像越完整，六维匹配的可解释性越强。当前完成度 78%，补上作品集与时间投入可进入前十。</p>
+          </div>
+          <div class="page-act">
+            <button class="btn ghost" onclick="UI.go('match')">看看匹配效果</button>
+            <button class="btn" onclick="saveProfile()">保存修改</button>
+          </div>
+        </header>
+
+        <div class="metrics metrics-4" style="margin-bottom:24px">
+          <div class="metric"><div class="metric-val">78<small>%</small></div><div class="metric-lab">画像完成度</div></div>
+          <div class="metric"><div class="metric-val">6</div><div class="metric-lab">技能标签</div></div>
+          <div class="metric"><div class="metric-val">3</div><div class="metric-lab">可投入项目</div></div>
+          <div class="metric"><div class="metric-val">2</div><div class="metric-lab">跨城协作经历</div></div>
+        </div>
+
+        <div class="grid g-2" style="margin-bottom:20px">
+          <div class="panel">
+            <div class="panel-hd"><h2>基本信息</h2><span class="hd-note">学校与专业会用于同城/跨城匹配</span></div>
+            <div class="panel-bd">
+              <div class="f-row">
+                <div class="field"><label for="p-name">姓名</label><input class="inp" id="p-name" value="徐承晖"></div>
+                <div class="field"><label for="p-school">学校</label>
+                  <select class="sel" id="p-school"><option selected>暨南大学</option><option>中山大学</option><option>华南理工大学</option><option>澳门大学</option><option>香港理工大学</option></select>
+                </div>
+              </div>
+              <div class="f-row">
+                <div class="field"><label for="p-major">专业</label><input class="inp" id="p-major" value="计算机科学与技术"></div>
+                <div class="field"><label for="p-grade">年级</label>
+                  <select class="sel" id="p-grade"><option>大二</option><option selected>大三</option><option>大四</option><option>研一</option></select>
+                </div>
+              </div>
+              <div class="f-row">
+                <div class="field"><label for="p-city">所在城市</label>
+                  <select class="sel" id="p-city"><option selected>广州</option><option>深圳</option><option>香港</option><option>澳门</option><option>东莞</option></select>
+                </div>
+                <div class="field"><label for="p-team">希望团队规模</label>
+                  <select class="sel" id="p-team"><option>2–3 人</option><option selected>3–5 人</option><option>5–8 人</option></select>
+                </div>
+              </div>
+              <div class="field">
+                <label>跨城协作意愿</label>
+                <div class="chipset" id="crossCity">
+                  <span class="chip" data-v="同城优先">同城优先</span>
+                  <span class="chip on" data-v="可跨城">可跨城（2 小时通勤内）</span>
+                  <span class="chip" data-v="港澳皆可">港澳皆可</span>
+                </div>
+                <div class="hint">选择「可跨城」后，广州—深圳—香港—澳门的伙伴都会进入推荐池。</div>
+              </div>
+              <div class="field" style="margin-bottom:0">
+                <label for="p-intro">个人简介</label>
+                <textarea class="txa" id="p-intro">计算机专业，做过 RAG 校园知识库与传感器数据采集，习惯把需求写成可验收的任务。希望找工业设计与生物医学背景的伙伴一起做硬件原型。</textarea>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel" style="margin-bottom:20px">
+              <div class="panel-hd"><h2>技能标签</h2><button class="btn quiet sm" onclick="addSkillModal()">+ 添加</button></div>
+              <div class="panel-bd" id="skillBox"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-hd"><h2>简历解析</h2><span class="tag grey">AI 解析</span></div>
+              <div class="panel-bd">
+                <p style="font-size:12.5px;color:var(--ink2);margin:0 0 12px">上传 PDF 简历后自动抽取教育经历、项目经历与技能，结果可人工校准，校准后的标签才会进入匹配模型。</p>
+                <div style="display:flex;gap:8px">
+                  <button class="btn ghost" onclick="uploadResume()">上传简历 PDF</button>
+                  <button class="btn quiet sm" onclick="UI.go('match')">查看解析结果</button>
+                </div>
+                <div class="hr"></div>
+                <dl class="kv">
+                  <dt>已识别技能</dt><dd>6 项（Python、RAG、数据分析、Vue、FPGA、文案）</dd>
+                  <dt>待确认</dt><dd><span class="tag amber">Vue</span> <span class="tag amber">文案</span> 置信度低于 0.6</dd>
+                  <dt>授权状态</dt><dd><span class="tag teal">已同意用于匹配</span></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 找伙伴 ---------- -->
+      <section data-view="match" hidden>
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">找伙伴</h1>
+            <p class="page-sub">六维加权打分，每一项得分都能拆开看。拖动权重会立刻重排候选，找到你在意的那个组合。</p>
+          </div>
+          <div class="page-act">
+            <button class="btn ghost" onclick="resetWeights()">恢复默认权重</button>
+            <button class="btn" onclick="applyMatch()">按当前条件重新计算</button>
+          </div>
+        </header>
+
+        <div class="grid g-2r">
+          <div>
+            <div class="panel" style="margin-bottom:20px">
+              <div class="panel-hd"><h2>权重</h2><span class="hd-note" id="wSum">合计 1.00</span></div>
+              <div class="panel-bd">
+                <div id="sliders"></div>
+                <div class="hint" style="margin-top:10px">权重会自动归一化，无需手动凑成 1.00。</div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-hd"><h2>筛选</h2><button class="btn quiet sm" onclick="clearFilters()">清空</button></div>
+              <div class="panel-bd">
+                <div class="field">
+                  <label>城市</label>
+                  <div class="chipset" id="cityFilter">
+                    <span class="chip on" data-v="全部">全部</span>
+                    <span class="chip" data-v="广州">广州</span>
+                    <span class="chip" data-v="深圳">深圳</span>
+                    <span class="chip" data-v="香港">香港</span>
+                    <span class="chip" data-v="澳门">澳门</span>
+                  </div>
+                </div>
+                <div class="field" style="margin-bottom:0">
+                  <label>我这边的技能（用于互补计算）</label>
+                  <div class="chipset" id="skillFilter">
+                    <span class="chip on" data-v="机器学习">机器学习</span>
+                    <span class="chip" data-v="工业设计">工业设计</span>
+                    <span class="chip" data-v="生物医学">生物医学</span>
+                    <span class="chip" data-v="品牌策划">品牌策划</span>
+                    <span class="chip" data-v="金融科技">金融科技</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-hd"><h2>推荐结果</h2><span class="hd-note" id="matchCount">5 位候选</span></div>
+            <div class="rows" id="matchList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 我的团队 ---------- -->
+      <section data-view="team" hidden>
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">我的团队</h1>
+            <p class="page-sub">人在团队里的贡献会写进契约，退出、换人都有记录，不靠聊天记录追溯。</p>
+          </div>
+          <div class="page-act">
+            <button class="btn ghost" onclick="UI.go('message')">去沟通</button>
+            <button class="btn" onclick="createTeamModal()">创建团队</button>
+          </div>
+        </header>
+
+        <div class="panel">
+          <div class="panel-hd" style="padding-bottom:0;border-bottom:0">
+            <div class="tabs" data-tabs style="border-bottom:0">
+              <button class="tab on" data-tab="mine">我的团队<span class="n">2</span></button>
+              <button class="tab" data-tab="recruit">招募中<span class="n">3</span></button>
+              <button class="tab" data-tab="apply">收到的申请<span class="n">2</span></button>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--line)">
+            <div data-tabpanel="mine"><div class="rows" id="teamMine"></div></div>
+            <div data-tabpanel="recruit" hidden><div class="rows" id="teamRecruit"></div></div>
+            <div data-tabpanel="apply" hidden><div class="rows" id="teamApply"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 项目共创 ---------- -->
+      <section data-view="project" hidden>
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">项目共创</h1>
+            <p class="page-sub">把想法拆成岗位与周次，机制先于热情：谁负责什么、什么时候验收、成果归谁，立项时就写清楚。</p>
+          </div>
+          <div class="page-act">
+            <button class="btn ghost" onclick="UI.openModal({title:'新建项目',body:newProjectForm(),okText:'保存草稿',onOk:function(){UI.toast('草稿已保存到「我的项目」');return true}})">新建项目</button>
+            <button class="btn" onclick="publishProject()">发布招募</button>
+          </div>
+        </header>
+
+        <div class="grid g-2p">
+          <div class="panel" style="align-self:start">
+            <div class="panel-hd"><h2>我的项目</h2><span class="hd-note">4 个</span></div>
+            <div class="rows" id="projList"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-hd">
+              <h2 id="projTitle">湾区生物传感原型</h2>
+              <span class="tag amber" id="projStatus"><span class="dot"></span>招募中</span>
+            </div>
+            <div class="panel-bd">
+              <p style="font-size:12.5px;color:var(--ink2);margin:0 0 4px" id="projDesc"></p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0" id="projTags"></div>
+
+              <div class="hr"></div>
+              <h3 style="font-family:var(--serif);font-size:14px;margin:0 0 12px;letter-spacing:.02em">岗位配置</h3>
+              <div id="projRoles"></div>
+
+              <div class="hr"></div>
+              <h3 style="font-family:var(--serif);font-size:14px;margin:0 0 14px;letter-spacing:.02em">执行路线</h3>
+              <div class="tl" id="projTimeline"></div>
+
+              <div class="hr"></div>
+              <div class="panel" style="border-color:var(--line2)">
+                <div class="panel-hd"><h2>项目契约</h2><span class="tag" id="contractTag">待签署</span></div>
+                <div class="panel-bd">
+                  <dl class="kv">
+                    <dt>分工比例</dt><dd>徐承晖 算法 40% · 同学 A 数据 25% · 同学 B 结构 25% · 同学 D 用户研究 10%</dd>
+                    <dt>阶段验收</dt><dd>每 2 周一次，验收不通过则按契约第 4 条重排任务</dd>
+                    <dt>成果归属</dt><dd>数据与材料归项目共有，个人署名保留</dd>
+                    <dt>争议处理</dt><dd>由团队负责人发起复议，学校端可查阅存证</dd>
+                  </dl>
+                  <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+                    <button class="btn" onclick="signContract()" id="signBtn">签署契约</button>
+                    <button class="btn ghost" onclick="UI.toast('已把契约副本发送到消息中心')">发送副本</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 科创资源 ---------- -->
+      <section data-view="resource" hidden>
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">科创资源</h1>
+            <p class="page-sub">基金、孵化、实习、创赛辅导按你的画像排序，跨城资源会标注通勤与签证成本。</p>
+          </div>
+          <div class="page-act">
+            <span class="geo">资源向量索引 128 条<br>最后更新 11 月 9 日</span>
+          </div>
+        </header>
+
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px" id="resFilter">
+          <span class="chip on" data-v="全部">全部</span>
+          <span class="chip" data-v="基金">基金</span>
+          <span class="chip" data-v="孵化空间">孵化空间</span>
+          <span class="chip" data-v="实习">实习</span>
+          <span class="chip" data-v="创赛辅导">创赛辅导</span>
+          <span class="chip" data-v="跨城">跨城资源</span>
+        </div>
+        <div class="panel"><div class="rows" id="resList"></div></div>
+      </section>
+
+      <!-- ---------- 消息 ---------- -->
+      <section data-view="message" hidden>
+        <header class="pagehead">
+          <div>
+            <h1 class="page-title">消息</h1>
+            <p class="page-sub">项目群与私聊在一起，重要节点（邀请、契约、验收）会自动留一条系统消息。</p>
+          </div>
+        </header>
+        <div class="msg">
+          <div class="msg-list" id="msgList"></div>
+          <div class="msg-thread">
+            <div class="msg-hd"><span id="msgTitle">湾区传感小组</span><span style="font-size:11px;color:var(--ink3)" id="msgMembers">4 人</span></div>
+            <div class="msg-body" id="msgBody"></div>
+            <div class="msg-input">
+              <input class="inp" id="msgInput" placeholder="输入消息，回车发送" style="flex:1">
+              <button class="btn" onclick="sendMsg()">发送</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>/* ============================================================
+   OPC Hub · 三端共用交互底座（原生 JS）
+   hash 路由 + 抽屉 + 弹窗 + toast + 通用渲染辅助
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  /* ---------- toast ---------- */
+  var toastEl = null;
+  function toast(msg) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'toast';
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = msg;
+    toastEl.classList.add('on');
+    clearTimeout(toastEl._t);
+    toastEl._t = setTimeout(function () { toastEl.classList.remove('on'); }, 2400);
+  }
+
+  /* ---------- hash 路由 ---------- */
+  function currentRoute() {
+    var h = location.hash.replace(/^#\/?/, '');
+    return h || 'home';
+  }
+  function go(route) {
+    if (!route) return;
+    location.hash = '/' + route;
+  }
+  function render() {
+    var route = currentRoute();
+    var views = $$('[data-view]');
+    var hit = false;
+    views.forEach(function (v) {
+      var on = v.getAttribute('data-view') === route;
+      v.hidden = !on;
+      if (on) hit = true;
+    });
+    if (!hit && views.length) { views[0].hidden = false; route = views[0].getAttribute('data-view'); }
+    $$('.nav-item').forEach(function (n) {
+      n.classList.toggle('on', n.getAttribute('data-route') === route);
+      n.setAttribute('aria-current', n.getAttribute('data-route') === route ? 'page' : 'false');
+    });
+    if (window.__onRoute) window.__onRoute(route);
+  }
+  window.addEventListener('hashchange', render);
+
+  /* ---------- 抽屉 ---------- */
+  var drawerEl = null, backdropEl = null;
+  function ensureDrawer() {
+    if (drawerEl) return;
+    backdropEl = document.createElement('div');
+    backdropEl.className = 'backdrop';
+    backdropEl.addEventListener('click', closeDrawer);
+    drawerEl = document.createElement('aside');
+    drawerEl.className = 'drawer';
+    drawerEl.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(backdropEl);
+    document.body.appendChild(drawerEl);
+  }
+  function openDrawer(opt) {
+    ensureDrawer();
+    drawerEl.innerHTML =
+      '<div class="drawer-hd"><div style="min-width:0">' +
+      '<h3>' + (opt.title || '') + '</h3>' +
+      (opt.sub ? '<p>' + opt.sub + '</p>' : '') +
+      '</div><button class="drawer-x" aria-label="关闭">×</button></div>' +
+      '<div class="drawer-bd">' + (opt.body || '') + '</div>' +
+      (opt.foot ? '<div class="drawer-ft">' + opt.foot + '</div>' : '');
+    drawerEl.querySelector('.drawer-x').addEventListener('click', closeDrawer);
+    drawerEl.classList.add('on');
+    backdropEl.classList.add('on');
+    drawerEl.setAttribute('aria-hidden', 'false');
+    if (opt.onOpen) opt.onOpen(drawerEl);
+  }
+  function closeDrawer() {
+    if (!drawerEl) return;
+    drawerEl.classList.remove('on');
+    backdropEl.classList.remove('on');
+    drawerEl.setAttribute('aria-hidden', 'true');
+  }
+
+  /* ---------- 弹窗 ---------- */
+  function openModal(opt) {
+    var mask = document.createElement('div');
+    mask.className = 'modal on';
+    mask.innerHTML =
+      '<div class="modal-box">' +
+      '<div class="modal-hd">' + (opt.title || '') + '</div>' +
+      '<div class="modal-bd">' + (opt.body || '') + '</div>' +
+      '<div class="modal-ft">' +
+      '<button class="btn ghost" data-m="cancel">' + (opt.cancelText || '取消') + '</button>' +
+      '<button class="btn' + (opt.danger ? ' danger' : '') + '" data-m="ok">' + (opt.okText || '确定') + '</button>' +
+      '</div></div>';
+    document.body.appendChild(mask);
+    function done() { mask.remove(); }
+    mask.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t === mask) { done(); return; }
+      var m = t.getAttribute && t.getAttribute('data-m');
+      if (m === 'cancel') done();
+      if (m === 'ok') {
+        var ok = true;
+        if (opt.onOk) ok = opt.onOk(mask.querySelector('.modal-bd'));
+        if (ok !== false) done();
+      }
+    });
+    if (opt.onOpen) opt.onOpen(mask.querySelector('.modal-bd'));
+    return mask;
+  }
+
+  /* ---------- ESC ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var modal = $('.modal.on');
+    if (modal) { modal.remove(); return; }
+    if (drawerEl && drawerEl.classList.contains('on')) closeDrawer();
+  });
+
+  /* ---------- 通用点击行为 ---------- */
+  document.addEventListener('click', function (e) {
+    var nav = e.target.closest && e.target.closest('.nav-item[data-route]');
+    if (nav) { e.preventDefault(); go(nav.getAttribute('data-route')); return; }
+
+    var tab = e.target.closest && e.target.closest('.tab[data-tab]');
+    if (tab) {
+      var group = tab.closest('[data-tabs]');
+      if (group) {
+        $$('.tab', group).forEach(function (t) { t.classList.remove('on'); });
+        tab.classList.add('on');
+        var scope = group.closest('.panel') || group.parentElement;
+        $$('[data-tabpanel]', scope).forEach(function (p) {
+          p.hidden = p.getAttribute('data-tabpanel') !== tab.getAttribute('data-tab');
+        });
+      }
+    }
+  });
+
+  /* ---------- 数字格式 ---------- */
+  function n(v) { return Number(v).toLocaleString('zh-CN'); }
+  function pct(v, d) { return (Number(v) * 100).toFixed(d === undefined ? 0 : d) + '%'; }
+
+  /* ---------- 图表兜底（无网络时用条形列表代替） ---------- */
+  function barsFallback(container, items, unit) {
+    var max = Math.max.apply(null, items.map(function (i) { return i.v; }));
+    container.innerHTML = '<div class="bars-fallback">' + items.map(function (i) {
+      return '<div class="bar-row"><span>' + i.k + '</span>' +
+        '<span class="bar-track"><i style="width:' + (i.v / max * 100).toFixed(1) + '%"></i></span>' +
+        '<span class="bar-num">' + i.v + (unit || '') + '</span></div>';
+    }).join('') + '</div>';
+  }
+  function hasECharts() { return typeof window.echarts !== 'undefined'; }
+
+  window.UI = {
+    $: $, $$: $$, toast: toast, go: go, render: render,
+    openDrawer: openDrawer, closeDrawer: closeDrawer, openModal: openModal,
+    n: n, pct: pct, barsFallback: barsFallback, hasECharts: hasECharts
+  };
+
+  document.addEventListener('DOMContentLoaded', render);
+  if (document.readyState !== 'loading') render();
+})();
+</script>
+<script>
+/* ================= 学生端数据 ================= */
+var STUDENTS = [
+  { id:'s2', name:'同学 A', ini:'A', tone:'', school:'华南理工大学', major:'计算机技术 · 研一', city:'广州', skills:['机器学习','数据分析','模型部署'], raw:{skill:93,exp:90,time:85,geo:75,comm:85},
+    reason:'机器学习与数据分析高度互补，同在广州，每周可投入 12 小时以上。', proj:'智能养老看护终端（负责人）' },
+  { id:'s3', name:'同学 B', ini:'B', tone:'t', school:'中山大学', major:'工业设计 · 大三', city:'广州', skills:['工业设计','结构建模','渲染'], raw:{skill:80,exp:82,time:88,geo:88,comm:82},
+    reason:'补上你最缺的结构与外观能力，同城且时间几乎完全对齐。', proj:'跨境青年市集品牌方案' },
+  { id:'s4', name:'同学 C', ini:'C', tone:'a', school:'暨南大学', major:'工商管理 · 大三', city:'广州', skills:['品牌策划','市场调研','商业计划书'], raw:{skill:62,exp:74,time:88,geo:92,comm:88},
+    reason:'商业表达强，适合把技术原型包装成可申报的项目。', proj:'跨境青年市集品牌方案（负责人）' },
+  { id:'s5', name:'同学 D', ini:'D', tone:'t', school:'澳门大学', major:'生物医学工程 · 大三', city:'澳门', skills:['生物传感','实验设计','英文文献'], raw:{skill:72,exp:68,time:80,geo:80,comm:85},
+    reason:'传感方向对口，跨城但每周可线上同步，通勤约 2 小时。', proj:'湾区生物传感原型' },
+  { id:'s6', name:'同学 E', ini:'E', tone:'a', school:'香港科技大学', major:'金融科技 · 大四', city:'香港', skills:['金融建模','区块链','粤英双语'], raw:{skill:58,exp:80,time:86,geo:62,comm:90},
+    reason:'能把项目资金模型算清楚，港澳资源对接经验丰富。', proj:'跨境供应链数据看板' }
+];
+
+var WEIGHTS = { skill:0.30, exp:0.20, time:0.20, geo:0.20, comm:0.10 };
+var WLABEL = { skill:'技能互补', exp:'项目经验', time:'投入时间', geo:'地域可达', comm:'沟通协作' };
+
+var PROJECTS = [
+  { id:'p1', title:'湾区生物传感原型', status:'招募中', tone:'amber', desc:'面向社区慢病筛查的低成本生物传感原型，三个月做出可演示的样机，并在校内做 20 人小样本验证。',
+    tags:['硬件原型','跨城','生物医学','3–5 人'],
+    roles:[{n:'算法与数据',need:1,filled:1,skills:['Python','信号处理']},{n:'结构设计',need:1,filled:0,skills:['建模','手板制作']},{n:'用户研究',need:1,filled:1,skills:['访谈','问卷']},{n:'硬件电路',need:1,filled:1,skills:['嵌入式','PCB']}],
+    phases:[{w:'第 1–2 周',t:'需求与文献',d:'确定筛查指标，完成 8 份医护访谈'},{w:'第 3–4 周',t:'原型验证',d:'打通传感采集到可视化，做 5 人试采'},{w:'第 5–8 周',t:'样机迭代',d:'结构手板与电路联调，误差控制在 5% 内'},{w:'第 9–12 周',t:'小样本验证',d:'20 人样本，形成验证报告与申报材料'}] },
+  { id:'p2', title:'校园 RAG 知识库', status:'进行中', tone:'teal', desc:'把教务文件、社团资料做成可溯源的问答库，回答必须带出处段落。',
+    tags:['软件','RAG','4 人满员'],
+    roles:[{n:'算法',need:1,filled:1,skills:['Python','向量检索']},{n:'前端',need:1,filled:1,skills:['Vue','交互']},{n:'数据治理',need:1,filled:1,skills:['清洗','标注']},{n:'测试',need:1,filled:1,skills:['用例','回归']}],
+    phases:[{w:'第 1–2 周',t:'语料盘点',d:'梳理 6 类文档，定切分策略'},{w:'第 3–4 周',t:'检索链路',d:'召回率达到 82%'},{w:'第 5–6 周',t:'联调测试',d:'答案带出处，人工抽检 200 条'},{w:'第 7–8 周',t:'上线试运行',d:'面向 2 个学院开放'}] },
+  { id:'p3', title:'跨境青年市集品牌方案', status:'招募中', tone:'amber', desc:'为港澳青年手作品牌做一套跨境市集方案，含视觉、摊位动线与结算流程。',
+    tags:['品牌','商业','跨城'],
+    roles:[{n:'品牌策划',need:1,filled:1,skills:['品牌','文案']},{n:'视觉设计',need:1,filled:1,skills:['平面','排版']},{n:'商务对接',need:1,filled:0,skills:['谈判','合同']}],
+    phases:[{w:'第 1–2 周',t:'品牌诊断',d:'访谈 12 个手作摊主'},{w:'第 3–4 周',t:'视觉与动线',d:'出 2 套视觉方案'},{w:'第 5–6 周',t:'试摆',d:'校内试摆 1 场，收集反馈'}] },
+  { id:'p4', title:'智能养老看护终端', status:'草稿', tone:'grey', desc:'毫米波+语音的跌倒检测终端，重点做误报抑制。',
+    tags:['硬件','算法'],
+    roles:[{n:'算法',need:1,filled:1,skills:['信号处理']},{n:'结构',need:1,filled:0,skills:['建模']}],
+    phases:[{w:'第 1–2 周',t:'场景确认',d:'走访 3 家社区养老中心'}] }
+];
+
+var TEAMS = {
+  mine:[
+    { name:'湾区传感小组', status:'招募中', tone:'amber', n:3, size:5, proj:'湾区生物传感原型', lead:'徐承晖', members:['徐承晖','同学 A','同学 D'], desc:'跨广州、澳门两地，每周三线上同步。' },
+    { name:'跨境市集共创组', status:'满员', tone:'teal', n:5, size:5, proj:'跨境青年市集品牌方案', lead:'同学 C', members:['同学 C','同学 B','同学 E','徐承晖','同学 A'], desc:'品牌 + 商务 + 视觉，试摆阶段。' }
+  ],
+  recruit:[
+    { name:'银龄科技小队', status:'招募中', tone:'amber', n:4, size:6, proj:'智能养老看护终端', lead:'同学 A', members:['同学 A','同学 D','同学 E','徐承晖'], desc:'缺结构设计与测试，接受跨城。' },
+    { name:'跨境数据看板组', status:'招募中', tone:'amber', n:2, size:4, proj:'跨境供应链数据看板', lead:'同学 E', members:['同学 E','同学 C'], desc:'需要能写 SQL 与做可视化的伙伴。' },
+    { name:'校园知识库小组', status:'招募中', tone:'amber', n:3, size:4, proj:'校园 RAG 知识库', lead:'徐承晖', members:['徐承晖','同学 B','同学 A'], desc:'还差一名测试。' }
+  ],
+  apply:[
+    { name:'同学 B', ini:'B', tone:'t', school:'中山大学 · 工业设计', team:'湾区传感小组', role:'结构设计', time:'2 小时前', msg:'做过两款手板，想参与传感原型的结构。' },
+    { name:'同学 C', ini:'C', tone:'a', school:'暨南大学 · 工商管理', team:'湾区传感小组', role:'商业与申报', time:'昨天', msg:'可以帮忙写基金申报书与路演材料。' }
+  ]
+};
+
+var RESOURCES = [
+  { id:'r1', cat:'基金', title:'青年科创种子基金', org:'粤港澳青年科创联盟', place:'线上申报', time:'11 月 28 日截止', desc:'面向 35 岁以下青年，最高 50 万元启动支持，需提交原型说明与团队分工。', fit:92 },
+  { id:'r2', cat:'孵化空间', title:'孵化空间入驻（广州南沙）', org:'南沙青年创业孵化中心（孵化器）', place:'广州 · 南沙', time:'长期开放', desc:'3 个月免租工位 + 基础实验设备，适合硬件原型阶段。', fit:88 },
+  { id:'r3', cat:'实习', title:'港澳青年实习直通车', org:'21 家湾区企业', place:'深圳 / 香港', time:'12 月入职', desc:'算法、硬件、产品岗位，实习期 3 个月，可转正。', fit:76 },
+  { id:'r4', cat:'创赛辅导', title:'大湾区创赛辅导营', org:'高校联合辅导组', place:'广州 · 大学城', time:'8 周课程', desc:'商业计划书、路演表达、答辩模拟，导师一对一两次。', fit:84 },
+  { id:'r5', cat:'跨城', title:'跨境工位申请（澳门）', org:'濠江跨境创客空间（跨境工位）', place:'澳门 · 路氹', time:'滚动申请', desc:'跨境工位 + 澳门市场对接，需港澳通行证与团队备案。', fit:69 }
+];
+
+var CHATS = [
+  { id:'c1', name:'湾区传感小组', members:'4 人', last:'同学 A：结构的公差我明天补一版', time:'10:24', unread:2,
+    msgs:[
+      { who:'系统', me:false, txt:'契约「湾区生物传感原型」已由 同学 A、同学 D 签署，待徐承晖签署。' },
+      { who:'同学 A', me:false, txt:'第 3 周的原型验证我这边数据跑通了，采样误差 4.2%。' },
+      { who:'徐承晖', me:true, txt:'好，结构那边还差人，我约了同学 B明天聊。' },
+      { who:'同学 D', me:false, txt:'澳门这边社区中心同意做 20 人小样本，时间在月底。' },
+      { who:'同学 A', me:false, txt:'结构的公差我明天补一版' }
+    ] },
+  { id:'c2', name:'同学 B', members:'单聊', last:'同学 B：可以，周三晚上线上聊？', time:'昨天', unread:0,
+    msgs:[
+      { who:'徐承晖', me:true, txt:'看到你的手板作品，想请你做结构的负责人。' },
+      { who:'同学 B', me:false, txt:'可以，周三晚上线上聊？' }
+    ] },
+  { id:'c3', name:'跨境市集共创组', members:'5 人', last:'同学 C：视觉方案第二版已上传', time:'周一', unread:0,
+    msgs:[
+      { who:'同学 C', me:false, txt:'视觉方案第二版已上传，动线改成了双入口。' },
+      { who:'徐承晖', me:true, txt:'结算流程那块我补一版流程图。' }
+    ] }
+];
+
+/* ================= 工具 ================= */
+function scoreOf(s, w){
+  var sum = w.skill + w.exp + w.time + w.geo + w.comm;
+  var total = 0, detail = {};
+  Object.keys(w).forEach(function(k){
+    var wn = w[k] / sum;
+    detail[k] = wn * s.raw[k];
+    total += detail[k];
+  });
+  return { total: total, detail: detail };
+}
+function fmt1(v){ return (Math.round(v * 10) / 10).toFixed(1); }
+
+/* ================= 工作台 ================= */
+function renderHome(){
+  var top = STUDENTS.slice().sort(function(a,b){ return scoreOf(b,WEIGHTS).total - scoreOf(a,WEIGHTS).total; }).slice(0,3);
+  document.getElementById('homeMatchList').innerHTML = top.map(function(s){
+    var sc = scoreOf(s, WEIGHTS);
+    return '<div class="row" onclick="openStudent(\'' + s.id + '\')">' +
+      '<div class="ava ' + s.tone + '">' + s.ini + '</div>' +
+      '<div class="row-main"><div class="row-title">' + s.name + ' <span class="tag line">' + s.city + '</span></div>' +
+      '<div class="row-meta"><span>' + s.school + '</span><span>' + s.major + '</span><span>' + s.skills.join(' / ') + '</span></div></div>' +
+      '<div class="row-right"><div class="score"><span class="score-num">' + fmt1(sc.total) + '</span>' +
+      '<span class="score-bar"><i style="width:' + Math.min(sc.total,100) + '%"></i></span></div></div></div>';
+  }).join('');
+
+  document.getElementById('homeResList').innerHTML = RESOURCES.slice(0,3).map(function(r){
+    return '<div class="row" onclick="openResource(\'' + r.id + '\')">' +
+      '<div class="row-main"><div class="row-title">' + r.title + ' <span class="tag line">' + r.cat + '</span></div>' +
+      '<div class="row-meta"><span>' + r.org + '</span><span>' + r.place + '</span><span>' + r.time + '</span></div></div>' +
+      '<div class="row-right"><span class="tag teal">匹配 ' + r.fit + '</span></div></div>';
+  }).join('');
+}
+
+/* ================= 画像 ================= */
+function renderSkills(){
+  var list = [ {n:'Python',lv:4},{n:'RAG / 向量检索',lv:4},{n:'数据分析',lv:3},{n:'FPGA / Vivado',lv:3},{n:'Vue 基础',lv:2},{n:'文案',lv:2} ];
+  document.getElementById('skillBox').innerHTML = list.map(function(s){
+    return '<div class="skill-line"><span class="name">' + s.n + '</span>' +
+      '<span class="lvtrack"><i style="width:' + (s.lv*20) + '%"></i></span>' +
+      '<span class="lv">' + ['入门','了解','熟练','精通'][s.lv-1] + '</span></div>';
+  }).join('') + '<div class="hint" style="margin-top:10px">熟练度来自简历解析与项目评价，可在校准页手动调整。</div>';
+}
+function addSkillModal(){
+  UI.openModal({
+    title:'添加技能标签',
+    body:'<div class="field"><label>技能名称</label><input class="inp" id="newSkill" placeholder="例如 传感器标定"></div>' +
+         '<div class="field" style="margin-bottom:0"><label>熟练度</label><select class="sel" id="newLv"><option>入门</option><option>了解</option><option selected>熟练</option><option>精通</option></select></div>',
+    okText:'添加',
+    onOk:function(box){
+      var v = box.querySelector('#newSkill').value.trim();
+      if(!v){ UI.toast('请填写技能名称'); return false; }
+      UI.toast('已添加技能：' + v);
+      return true;
+    }
+  });
+}
+function uploadResume(){
+  UI.openModal({
+    title:'上传简历 PDF',
+    body:'<p style="font-size:12.5px;color:var(--ink2);margin:0 0 14px">支持 PDF 简历，解析后自动抽取教育经历、项目经历与技能，结果需你确认后才进入匹配。</p>' +
+         '<div style="border:1px dashed var(--line2);padding:26px;text-align:center;font-size:12.5px;color:var(--ink3)">把 PDF 拖到这里，或点击选择文件<br><span style="font-size:11px">单个文件不超过 10MB</span></div>' +
+         '<div class="note" style="margin-top:14px">解析会抽取教育经历、项目经历与技能，结果需你确认后才进入匹配。</div>',
+    okText:'上传并解析',
+    onOk:function(){ UI.toast('解析完成：识别 6 项技能，2 项待确认'); return true; }
+  });
+}
+function saveProfile(){ UI.toast('画像已保存，匹配权重与推荐已更新'); }
+
+/* ================= 找伙伴 ================= */
+function renderSliders(){
+  document.getElementById('sliders').innerHTML = Object.keys(WLABEL).map(function(k){
+    return '<div class="slider-row"><label>' + WLABEL[k] + '</label>' +
+      '<input type="range" min="0" max="0.5" step="0.01" value="' + WEIGHTS[k] + '" data-w="' + k + '">' +
+      '<output>' + WEIGHTS[k].toFixed(2) + '</output></div>';
+  }).join('');
+  UI.$$('#sliders input[type=range]').forEach(function(r){
+    r.addEventListener('input', function(){
+      var k = r.getAttribute('data-w');
+      WEIGHTS[k] = parseFloat(r.value);
+      r.parentElement.querySelector('output').textContent = WEIGHTS[k].toFixed(2);
+      var sum = Object.keys(WEIGHTS).reduce(function(a,b){ return a + WEIGHTS[b]; }, 0);
+      document.getElementById('wSum').textContent = '合计 ' + sum.toFixed(2);
+      renderMatch();
+    });
+  });
+}
+function activeChip(group){
+  var on = document.querySelector('#' + group + ' .chip.on');
+  return on ? on.getAttribute('data-v') : '全部';
+}
+function renderMatch(){
+  var city = activeChip('cityFilter');
+  var skill = activeChip('skillFilter');
+  var list = STUDENTS.filter(function(s){
+    if(city !== '全部' && s.city !== city) return false;
+    return true;
+  }).map(function(s){ return { s:s, sc:scoreOf(s, WEIGHTS) }; })
+    .sort(function(a,b){ return b.sc.total - a.sc.total; });
+
+  document.getElementById('matchCount').textContent = list.length + ' 位候选';
+  if(!list.length){
+    document.getElementById('matchList').innerHTML = '<div class="empty">当前筛选下没有候选，试试放宽城市条件</div>';
+    return;
+  }
+  document.getElementById('matchList').innerHTML = list.map(function(o){
+    var s = o.s, sc = o.sc;
+    var dims = Object.keys(WLABEL).map(function(k){
+      return '<div class="dim"><div class="dim-top"><span>' + WLABEL[k] + '</span><b>' + fmt1(sc.detail[k]) + '</b></div>' +
+        '<div class="dim-track"><i style="width:' + Math.min(sc.detail[k] * 3, 100) + '%"></i></div></div>';
+    }).join('');
+    return '<div class="row" style="align-items:flex-start" onclick="openStudent(\'' + s.id + '\')">' +
+      '<div class="ava ' + s.tone + '">' + s.ini + '</div>' +
+      '<div class="row-main"><div class="row-title">' + s.name +
+      ' <span class="tag line">' + s.city + '</span>' +
+      (skill !== '全部' ? ' <span class="tag teal">互补：' + skill + '</span>' : '') + '</div>' +
+      '<div class="row-meta"><span>' + s.school + '</span><span>' + s.major + '</span><span>' + s.skills.join(' / ') + '</span></div>' +
+      '<div style="font-size:11.5px;color:var(--ink3);margin-top:7px;line-height:1.6">' + s.reason + '</div>' +
+      '<div class="dims">' + dims + '</div></div>' +
+      '<div class="row-right" style="flex-direction:column;align-items:flex-end;gap:8px">' +
+      '<div class="score"><span class="score-num">' + fmt1(sc.total) + '</span></div>' +
+      '<button class="btn ghost sm" onclick="event.stopPropagation();invite(\'' + s.id + '\')">发起邀约</button></div></div>';
+  }).join('');
+}
+function resetWeights(){ WEIGHTS = { skill:0.30, exp:0.20, time:0.20, geo:0.20, comm:0.10 }; renderSliders(); renderMatch(); UI.toast('已恢复默认权重'); }
+function clearFilters(){
+  document.querySelectorAll('#cityFilter .chip').forEach(function(c,i){ c.classList.toggle('on', i===0); });
+  document.querySelectorAll('#skillFilter .chip').forEach(function(c,i){ c.classList.toggle('on', i===0); });
+  renderMatch(); UI.toast('筛选已清空');
+}
+function applyMatch(){ renderMatch(); UI.toast('已按当前权重重新计算推荐'); }
+function invite(id){
+  var s = STUDENTS.filter(function(x){ return x.id === id; })[0];
+  UI.openModal({
+    title:'向 ' + s.name + ' 发起邀约',
+    body:'<div class="field"><label>邀请加入的项目</label><select class="sel"><option>湾区生物传感原型</option><option>校园 RAG 知识库</option><option>跨境青年市集品牌方案</option></select></div>' +
+         '<div class="field" style="margin-bottom:0"><label>岗位与说明</label><textarea class="txa">想请你负责' + s.skills[0] + '这块，第 3 周开始，每周约 8 小时。</textarea></div>',
+    okText:'发送邀约',
+    onOk:function(){ UI.toast('邀约已发送，对方会在消息中心收到通知'); return true; }
+  });
+}
+function openStudent(id){
+  var s = STUDENTS.filter(function(x){ return x.id === id; })[0];
+  var sc = scoreOf(s, WEIGHTS);
+  var dims = Object.keys(WLABEL).map(function(k){
+    return '<div class="dim"><div class="dim-top"><span>' + WLABEL[k] + '</span><b>' + fmt1(sc.detail[k]) + '</b></div>' +
+      '<div class="dim-track"><i style="width:' + Math.min(sc.detail[k] * 3, 100) + '%"></i></div></div>';
+  }).join('');
+  UI.openDrawer({
+    title: s.name,
+    sub: s.school + ' · ' + s.major + ' · ' + s.city,
+    body:
+      '<div style="display:flex;gap:14px;align-items:center;margin-bottom:16px">' +
+      '<div class="ava lg ' + s.tone + '">' + s.ini + '</div>' +
+      '<div><div style="font-family:var(--serif);font-size:22px;line-height:1.1">' + fmt1(sc.total) + '<span style="font-size:12px;color:var(--ink3)"> / 100 匹配分</span></div>' +
+      '<div style="margin-top:6px">' + s.skills.map(function(k){ return '<span class="tag" style="margin-right:5px">' + k + '</span>'; }).join('') + '</div></div></div>' +
+      '<div class="note">' + s.reason + '</div>' +
+      '<div class="hr"></div><h3 style="font-family:var(--serif);font-size:14px;margin:0 0 10px">分项得分</h3>' +
+      '<div class="dims" style="grid-template-columns:1fr 1fr">' + dims + '</div>' +
+      '<div class="hr"></div><dl class="kv"><dt>在研项目</dt><dd>' + s.proj + '</dd><dt>可投入</dt><dd>每周 10–12 小时</dd><dt>协作方式</dt><dd>线上为主，每两周线下一次</dd></dl>',
+    foot:'<button class="btn ghost" onclick="UI.closeDrawer();UI.go(\'message\')">先聊聊</button>' +
+         '<button class="btn" onclick="UI.closeDrawer();invite(\'' + s.id + '\')">发起邀约</button>'
+  });
+}
+
+/* ================= 团队 ================= */
+function renderTeams(){
+  document.getElementById('teamMine').innerHTML = TEAMS.mine.map(function(t){
+    return '<div class="row" onclick="openTeam(\'' + t.name + '\',\'mine\')">' +
+      '<div class="row-main"><div class="row-title">' + t.name + ' <span class="tag ' + t.tone + '">' + t.status + '</span></div>' +
+      '<div class="row-meta"><span>' + t.proj + '</span><span>' + t.n + '/' + t.size + ' 人</span><span>负责人 ' + t.lead + '</span></div>' +
+      '<div style="font-size:11.5px;color:var(--ink3);margin-top:5px">' + t.desc + '</div></div>' +
+      '<div class="row-right"><button class="btn ghost sm" onclick="event.stopPropagation();openTeam(\'' + t.name + '\',\'mine\')">查看</button></div></div>';
+  }).join('');
+
+  document.getElementById('teamRecruit').innerHTML = TEAMS.recruit.map(function(t){
+    return '<div class="row">' +
+      '<div class="row-main"><div class="row-title">' + t.name + ' <span class="tag amber">' + t.status + '</span></div>' +
+      '<div class="row-meta"><span>' + t.proj + '</span><span>' + t.n + '/' + t.size + ' 人</span><span>负责人 ' + t.lead + '</span></div>' +
+      '<div style="font-size:11.5px;color:var(--ink3);margin-top:5px">' + t.desc + '</div></div>' +
+      '<div class="row-right"><button class="btn ghost sm" onclick="applyTeam(\'' + t.name + '\')">申请加入</button></div></div>';
+  }).join('');
+
+  document.getElementById('teamApply').innerHTML = TEAMS.apply.map(function(a){
+    return '<div class="row">' +
+      '<div class="ava ' + a.tone + '">' + a.ini + '</div>' +
+      '<div class="row-main"><div class="row-title">' + a.name + ' <span class="tag line">' + a.role + '</span></div>' +
+      '<div class="row-meta"><span>' + a.school + '</span><span>申请加入 ' + a.team + '</span><span>' + a.time + '</span></div>' +
+      '<div style="font-size:11.5px;color:var(--ink3);margin-top:5px">“' + a.msg + '”</div></div>' +
+      '<div class="row-right"><button class="btn ghost sm" onclick="handleApply(this,\'' + a.name + '\',false)">婉拒</button>' +
+      '<button class="btn sm" onclick="handleApply(this,\'' + a.name + '\',true)">同意</button></div></div>';
+  }).join('');
+}
+function openTeam(name, kind){
+  var t = TEAMS[kind].filter(function(x){ return x.name === name; })[0];
+  if(!t) return;
+  UI.openDrawer({
+    title: t.name, sub: t.proj + ' · ' + t.n + '/' + t.size + ' 人 · 负责人 ' + t.lead,
+    body:'<div class="note">' + t.desc + '</div><div class="hr"></div>' +
+      '<h3 style="font-family:var(--serif);font-size:14px;margin:0 0 12px">成员</h3>' +
+      t.members.map(function(m,i){
+        var tone = i===0 ? '' : ['t','a'][i % 2];
+        return '<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)">' +
+          '<div class="ava ' + tone + '">' + m.charAt(0) + '</div>' +
+          '<div><div style="font-size:13px">' + m + '</div>' +
+          '<div style="font-size:11px;color:var(--ink3)">' + (i===0 ? '团队负责人' : ['算法 / 数据','结构设计','用户研究','视觉','商务'][i % 5]) + '</div></div></div>';
+      }).join(''),
+    foot:'<button class="btn ghost" onclick="UI.closeDrawer();UI.go(\'message\')">团队群聊</button>' +
+         '<button class="btn" onclick="UI.closeDrawer();UI.go(\'project\')">查看项目</button>'
+  });
+}
+function applyTeam(name){
+  UI.openModal({
+    title:'申请加入 ' + name,
+    body:'<div class="field"><label>想承担的岗位</label><select class="sel"><option>算法与数据</option><option>结构设计</option><option>测试</option></select></div>' +
+         '<div class="field" style="margin-bottom:0"><label>给负责人的话</label><textarea class="txa">我做过两版手板，可以每周投入 8 小时。</textarea></div>',
+    okText:'提交申请',
+    onOk:function(){ UI.toast('申请已提交，负责人处理后会通知你'); return true; }
+  });
+}
+function handleApply(btn, name, ok){
+  var row = btn.closest('.row');
+  var right = row.querySelector('.row-right');
+  right.innerHTML = ok ? '<span class="tag teal"><span class="dot"></span>已同意</span>' : '<span class="tag grey"><span class="dot"></span>已婉拒</span>';
+  UI.toast(ok ? '已同意 ' + name + ' 加入，契约分工待更新' : '已婉拒 ' + name + '，对方会收到通知');
+}
+function createTeamModal(){
+  UI.openModal({
+    title:'创建团队',
+    body:'<div class="field"><label>团队名称</label><input class="inp" id="teamName" placeholder="例如 湾区传感小组"></div>' +
+         '<div class="f-row"><div class="field"><label>人数上限</label><select class="sel"><option>3 人</option><option selected>5 人</option><option>8 人</option></select></div>' +
+         '<div class="field"><label>是否公开招募</label><select class="sel"><option selected>公开招募</option><option>仅邀请</option></select></div></div>' +
+         '<div class="field" style="margin-bottom:0"><label>团队简介</label><textarea class="txa" placeholder="做什么、缺什么人、每周投入多少"></textarea></div>',
+    okText:'创建',
+    onOk:function(box){
+      var v = box.querySelector('#teamName').value.trim();
+      if(!v){ UI.toast('请填写团队名称'); return false; }
+      TEAMS.mine.unshift({ name:v, status:'招募中', tone:'amber', n:1, size:5, proj:'未关联项目', lead:'徐承晖', members:['徐承晖'], desc:'新建团队，等待成员加入。' });
+      renderTeams(); UI.toast('团队「' + v + '」已创建');
+      return true;
+    }
+  });
+}
+
+/* ================= 项目 ================= */
+var curProj = PROJECTS[0].id;
+function renderProjects(){
+  document.getElementById('projList').innerHTML = PROJECTS.map(function(p){
+    return '<div class="row' + (p.id === curProj ? ' sel' : '') + '" onclick="selectProj(\'' + p.id + '\')">' +
+      '<div class="row-main"><div class="row-title">' + p.title + ' <span class="tag ' + p.tone + '">' + p.status + '</span></div>' +
+      '<div class="row-meta"><span>' + p.roles.reduce(function(a,r){ return a + r.filled; },0) + '/' + p.roles.reduce(function(a,r){ return a + r.need; },0) + ' 岗位已填</span><span>' + p.phases.length + ' 个阶段</span></div></div></div>';
+  }).join('');
+  var p = PROJECTS.filter(function(x){ return x.id === curProj; })[0];
+  document.getElementById('projTitle').textContent = p.title;
+  document.getElementById('projStatus').className = 'tag ' + p.tone;
+  document.getElementById('projStatus').innerHTML = '<span class="dot"></span>' + p.status;
+  document.getElementById('projDesc').textContent = p.desc;
+  document.getElementById('projTags').innerHTML = p.tags.map(function(t){ return '<span class="tag line">' + t + '</span>'; }).join('');
+  document.getElementById('projRoles').innerHTML = p.roles.map(function(r){
+    var pctv = Math.round(r.filled / r.need * 100);
+    return '<div style="padding:10px 0;border-bottom:1px solid var(--line)">' +
+      '<div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px"><span>' + r.n + '</span>' +
+      '<span style="color:var(--ink3)">' + r.filled + '/' + r.need + ' 人</span></div>' +
+      '<div class="progbar" style="width:100%;margin-top:6px"><i style="width:' + Math.min(pctv,100) + '%;background:' + (pctv<100 ? 'var(--amber)' : 'var(--teal)') + '"></i></div>' +
+      '<div style="margin-top:5px">' + r.skills.map(function(s){ return '<span class="tag grey" style="margin-right:4px">' + s + '</span>'; }).join('') +
+      (pctv < 100 ? ' <span style="font-size:11px;color:var(--amber)">招募中</span>' : '') + '</div></div>';
+  }).join('');
+  document.getElementById('projTimeline').innerHTML = p.phases.map(function(ph,i){
+    return '<div class="tl-week">' + ph.w + '</div>' +
+      '<div class="tl-axis"><span class="tl-dot" style="' + (i === 0 ? 'background:var(--brand)' : '') + '"></span></div>' +
+      '<div class="tl-body"><h4>' + ph.t + '</h4><p>' + ph.d + '</p>' +
+      (i === 0 ? '<span class="tag">当前阶段</span>' : '') + '</div>';
+  }).join('');
+  var signed = p.id === 'p2';
+  document.getElementById('contractTag').textContent = signed ? '已签署' : '待签署';
+  document.getElementById('contractTag').className = 'tag ' + (signed ? 'teal' : 'amber');
+  document.getElementById('signBtn').textContent = signed ? '已签署 · 查看存证' : '签署契约';
+}
+function selectProj(id){ curProj = id; renderProjects(); }
+function signContract(){
+  var p = PROJECTS.filter(function(x){ return x.id === curProj; })[0];
+  if(p.id === 'p2'){ UI.toast('契约已签署，存证哈希 0x8f2a…c41d'); return; }
+  UI.openModal({
+    title:'签署项目契约',
+    body:'<div class="note">签署后即对分工比例、阶段验收、成果归属达成一致，学校端可查阅存证，不可单方面修改。</div>' +
+         '<div class="hr"></div><dl class="kv"><dt>项目</dt><dd>' + p.title + '</dd><dt>分工</dt><dd>按岗位配置自动生成，可在签署前调整</dd><dt>存证</dt><dd>签署后生成哈希并写入审计日志</dd></dl>' +
+         '<div class="field" style="margin-top:14px;margin-bottom:0"><label>勾选确认</label>' +
+         '<div style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="agree" style="width:16px;height:16px"><span style="font-size:12px;color:var(--ink2)">我已阅读并同意上述条款</span></div></div>',
+    okText:'确认签署',
+    onOk:function(box){
+      if(!box.querySelector('#agree').checked){ UI.toast('请先勾选确认'); return false; }
+      UI.toast('契约已签署，存证哈希 0x5c19…a7e3');
+      renderProjects();
+      return true;
+    }
+  });
+}
+function publishProject(){ UI.toast('已发布招募，学校端将同步收到项目备案'); }
+function newProjectForm(){
+  return '<div class="field"><label>项目名称</label><input class="inp" placeholder="例如 湾区生物传感原型"></div>' +
+    '<div class="f-row"><div class="field"><label>项目类型</label><select class="sel"><option>硬件原型</option><option>软件 / 应用</option><option>品牌 / 商业</option><option>科研验证</option></select></div>' +
+    '<div class="field"><label>团队规模</label><select class="sel"><option>3–5 人</option><option>5–8 人</option></select></div></div>' +
+    '<div class="field"><label>目标</label><textarea class="txa" placeholder="三个月后要交付什么，怎么判断完成"></textarea></div>' +
+    '<div class="field" style="margin-bottom:0"><label>岗位</label><input class="inp" placeholder="算法、结构设计、用户研究（用顿号分隔）"></div>';
+}
+
+/* ================= 资源 ================= */
+function renderRes(){
+  var cat = activeChip('resFilter');
+  var list = RESOURCES.filter(function(r){
+    if(cat === '全部') return true;
+    if(cat === '跨城') return r.cat === '跨城' || r.place.indexOf('澳门') > -1 || r.place.indexOf('香港') > -1;
+    return r.cat === cat;
+  });
+  document.getElementById('resList').innerHTML = list.length ? list.map(function(r){
+    return '<div class="row" onclick="openResource(\'' + r.id + '\')">' +
+      '<div class="row-main"><div class="row-title">' + r.title + ' <span class="tag line">' + r.cat + '</span></div>' +
+      '<div class="row-meta"><span>' + r.org + '</span><span>' + r.place + '</span><span>' + r.time + '</span></div></div>' +
+      '<div class="row-right"><span class="tag teal">匹配 ' + r.fit + '</span></div></div>';
+  }).join('') : '<div class="empty">这个分类下暂无资源</div>';
+}
+function openResource(id){
+  var r = RESOURCES.filter(function(x){ return x.id === id; })[0];
+  UI.openDrawer({
+    title: r.title, sub: r.org + ' · ' + r.place + ' · ' + r.time,
+    body:'<div class="note">' + r.desc + '</div>' +
+      '<div class="hr"></div><dl class="kv"><dt>面向</dt><dd>在校青年与早期团队</dt><dt>匹配度</dt><dd>' + r.fit + ' / 100（依据你的画像与所在城市）</dd>' +
+      '<dt>需要材料</dt><dd>团队分工、原型说明、指导老师推荐</dd></dl>',
+    foot:'<button class="btn ghost" onclick="UI.toast(\'已收藏到我的资源\')">收藏</button>' +
+         '<button class="btn" onclick="UI.toast(\'已生成申报清单，去消息中心查看\')">去申报</button>'
+  });
+}
+
+/* ================= 消息 ================= */
+var curChat = 'c1';
+function renderChats(){
+  document.getElementById('msgList').innerHTML = CHATS.map(function(c){
+    return '<div class="msg-item' + (c.id === curChat ? ' on' : '') + '" onclick="selectChat(\'' + c.id + '\')">' +
+      '<div class="msg-name">' + c.name + '<span>' + c.time + '</span></div>' +
+      '<div class="msg-last">' + c.last + '</div></div>';
+  }).join('');
+  renderThread();
+}
+function renderThread(){
+  var c = CHATS.filter(function(x){ return x.id === curChat; })[0];
+  document.getElementById('msgTitle').textContent = c.name;
+  document.getElementById('msgMembers').textContent = c.members;
+  document.getElementById('msgBody').innerHTML = c.msgs.map(function(m){
+    return '<div class="bubble' + (m.me ? ' me' : '') + '">' +
+      '<div class="who">' + m.who + '</div><div class="txt">' + m.txt + '</div></div>';
+  }).join('');
+  var body = document.getElementById('msgBody');
+  body.scrollTop = body.scrollHeight;
+}
+function selectChat(id){
+  curChat = id;
+  var c = CHATS.filter(function(x){ return x.id === id; })[0];
+  c.unread = 0;
+  renderChats();
+}
+function sendMsg(){
+  var input = document.getElementById('msgInput');
+  var v = input.value.trim();
+  if(!v){ UI.toast('请输入消息内容'); return; }
+  var c = CHATS.filter(function(x){ return x.id === curChat; })[0];
+  c.msgs.push({ who:'徐承晖', me:true, txt:v });
+  c.last = '你：' + v;
+  input.value = '';
+  renderChats();
+  setTimeout(function(){
+    var reply = ['收到，我这边同步一下排期。','这个我来补，明天给你版本。','可以，约周三线上过一遍。'][Math.floor(Math.random()*3)];
+    c.msgs.push({ who: c.name.indexOf('组') > -1 ? '同学 A' : c.name, me:false, txt:reply });
+    c.last = reply;
+    renderChats();
+  }, 900);
+}
+document.getElementById('msgInput').addEventListener('keydown', function(e){ if(e.key === 'Enter') sendMsg(); });
+
+/* ================= 通用 chip 选择 ================= */
+document.addEventListener('click', function(e){
+  var chip = e.target.closest && e.target.closest('.chipset .chip, #resFilter .chip');
+  if(!chip) return;
+  var group = chip.parentElement;
+  Array.prototype.forEach.call(group.querySelectorAll('.chip'), function(c){ c.classList.remove('on'); });
+  chip.classList.add('on');
+  if(group.id === 'cityFilter' || group.id === 'skillFilter') renderMatch();
+  if(group.id === 'resFilter') renderRes();
+  if(group.id === 'crossCity') UI.toast('跨城意愿已设为：' + chip.getAttribute('data-v'));
+});
+
+/* ================= 启动 ================= */
+renderHome(); renderSkills(); renderSliders(); renderMatch(); renderTeams(); renderProjects(); renderRes(); renderChats();
+window.__onRoute = function(r){
+  if(r === 'home') renderHome();
+  if(r === 'match'){ renderSliders(); renderMatch(); }
+  if(r === 'team') renderTeams();
+  if(r === 'project') renderProjects();
+  if(r === 'resource') renderRes();
+  if(r === 'message') renderChats();
+  if(r === 'profile') renderSkills();
+};
+</script>
+<script>
+/* 直接在独立标签页打开本页时，角色切换走多页跳转 */
+window.addEventListener('message', function (e) {
+  var d = e.data;
+  if (typeof d !== 'string' || d.indexOf('opc:') !== 0) return;
+  if (window.parent !== window) return;
+  var k = d.slice(4);
+  location.href = 'index.html#' + (k === 'switch' ? 'entry' : k);
+});
+</script>
+</body>
+
+</html>
